@@ -64,15 +64,37 @@ def remove_units(read_file):
 
 read_file = pd.read_csv('data/train.csv', low_memory=False)
 
-read_file = read_file.drop('GLU', 1)  # 没有
-read_file = read_file.drop('ACR', 1)  # 没有
-read_file = read_file.drop('登记号', 1)  # 多余信息
-read_file = read_file.drop('病案号', 1)  # 多余信息
-read_file = read_file.drop('就诊ID', 1) # 多余信息
-read_file = read_file.drop('patient_unique_number', 1) # 多余信息
-# 删去单位并填补空缺值
-read_file = remove_units(read_file)
+# Create a list of columns to be dropped
+cols_to_drop = ['GLU', 'ACR', '登记号', '病案号', '就诊ID', 'patient_unique_number']
+
+# Drop the columns in one step
+read_file = read_file.drop(cols_to_drop, axis=1)
+
+# 删除其中一方太少了的，并填补空缺值
 read_file = read_file.astype({col: np.int8 for col in read_file.columns[read_file.dtypes == np.bool_]})
+# Define a threshold for the label ratio
+threshold = 5
+
+# Iterate over each column
+cols_to_drop = []
+for col in read_file.columns:
+    if col == 'is_BPH':
+        continue
+    else:
+        # Group the data by the target column
+        grouped = read_file.groupby('is_BPH')
+
+        # Calculate the ratio of each class in the column
+        counts = grouped[col].count()
+
+        # Check if the ratio of one class to the other is too high
+        if counts[0] > threshold * counts[1] or counts[1] > threshold * counts[0]:
+            # Drop the column if the ratio is too high
+            cols_to_drop.append(col)
+print('Drop ')
+print(cols_to_drop)
+read_file = read_file.drop(cols_to_drop, axis=1)
+read_file.fillna(read_file.mean(), inplace=True)
 # print(read_file.describe())
 # count_label(read_file)
 
@@ -99,21 +121,24 @@ train_all(train_features, train_labels, test_features, test_labels)
 # train(train_features, train_labels, test_features, test_labels, method='')
 
 
+# method is RandomForest
+# Mean Absolute Error: 0.03 degrees.
+# Accuracy: 0.99
 # method is LogisticRegression
+# Mean Absolute Error: 0.07 degrees.
+# Accuracy: 0.93
+# method is DecisionTree
 # Mean Absolute Error: 0.03 degrees.
 # Accuracy: 0.97
-# method is DecisionTree
-# Mean Absolute Error: 0.04 degrees.
-# Accuracy: 0.96
 # method is GaussianNB
-# Mean Absolute Error: 0.08 degrees.
-# Accuracy: 0.92
+# Mean Absolute Error: 0.14 degrees.
+# Accuracy: 0.86
 # method is SVM
 # Mean Absolute Error: 0.12 degrees.
 # Accuracy: 0.88
 # method is MLP
-# Mean Absolute Error: 0.03 degrees.
-# Accuracy: 0.97
+# Mean Absolute Error: 0.13 degrees.
+# Accuracy: 0.87
 # method is GBC
 # Mean Absolute Error: 0.01 degrees.
 # Accuracy: 0.99
