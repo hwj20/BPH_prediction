@@ -1,8 +1,9 @@
 import math
-from ml_utils import train
+from ml_utils import train, train_all
 
 import numpy
 import pandas as pd
+import numpy as np
 
 
 #
@@ -52,7 +53,7 @@ def remove_units(read_file):
                 val_list.append(float(''.join(tmp)))
 
         i = 1
-        if val_list and len(val_list) != 4542:
+        if val_list and len(val_list) != len(read_file):
             print(label)
             print(len(val_list))
             print('error!')
@@ -61,28 +62,17 @@ def remove_units(read_file):
     return read_file
 
 
-read_file = pd.read_csv('data/data_sample.csv', low_memory=False)
+read_file = pd.read_csv('data/train.csv', low_memory=False)
 
-# 编一个 label, (label=1) 1824
-actual = []
-for res in read_file['彩超结果']:
-    if '长大' in res:
-        actual.append(1)
-    else:
-        actual.append(0)
-read_file['actual'] = actual
-read_file = read_file.drop('登记时间', 1)  # 全是同一时间，且与疾病无关
-read_file = read_file.drop('性别', 1)  # 全是'男'
-read_file = read_file.drop('餐后2小时血糖', 1)  # 数据太少了
-# 删去文本数据 TODO：文本特征提取
-read_file = read_file.drop('现病史', 1)
-read_file = read_file.drop('手术史', 1)
-read_file = read_file.drop('饮酒', 1)
-read_file = read_file.drop('吸烟', 1)
-read_file = read_file.drop('彩超结果', 1)
-read_file = read_file.drop('彩超描述', 1)
-# 删去
+read_file = read_file.drop('GLU', 1)  # 没有
+read_file = read_file.drop('ACR', 1)  # 没有
+read_file = read_file.drop('登记号', 1)  # 多余信息
+read_file = read_file.drop('病案号', 1)  # 多余信息
+read_file = read_file.drop('就诊ID', 1) # 多余信息
+read_file = read_file.drop('patient_unique_number', 1) # 多余信息
+# 删去单位并填补空缺值
 read_file = remove_units(read_file)
+read_file = read_file.astype({col: np.int8 for col in read_file.columns[read_file.dtypes == np.bool_]})
 # print(read_file.describe())
 # count_label(read_file)
 
@@ -93,10 +83,10 @@ import numpy as np
 
 features = read_file
 # Labels are the values we want to predict
-labels = np.array(features['actual'])
+labels = np.array(features['is_BPH'])
 # Remove the labels from the features
 # axis 1 refers to the columns
-features = features.drop('actual', axis=1)
+features = features.drop('is_BPH', axis=1)
 # Saving feature names for later use
 feature_list = list(features.columns)
 # Convert to numpy array
@@ -105,4 +95,25 @@ features = np.array(features)
 train_features, test_features, train_labels, test_labels = train_test_split(features, labels, test_size=0.25,
                                                                             random_state=42)
 
-train(train_features, train_labels, test_features, test_labels)
+train_all(train_features, train_labels, test_features, test_labels)
+# train(train_features, train_labels, test_features, test_labels, method='')
+
+
+# method is LogisticRegression
+# Mean Absolute Error: 0.03 degrees.
+# Accuracy: 0.97
+# method is DecisionTree
+# Mean Absolute Error: 0.04 degrees.
+# Accuracy: 0.96
+# method is GaussianNB
+# Mean Absolute Error: 0.08 degrees.
+# Accuracy: 0.92
+# method is SVM
+# Mean Absolute Error: 0.12 degrees.
+# Accuracy: 0.88
+# method is MLP
+# Mean Absolute Error: 0.03 degrees.
+# Accuracy: 0.97
+# method is GBC
+# Mean Absolute Error: 0.01 degrees.
+# Accuracy: 0.99
