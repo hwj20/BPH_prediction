@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Risk Score Card Calculator</title>
+    <style>
+      body {
+        background-image: url('{{ url_for('static', filename='pics/calculator_bg.png') }}');
+        background-color: #f2f2f2;
+        background-size: cover;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      h1, h2, h3 {
+        color: #333;
+        text-align: center;
+      }
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 30px;
+}
+form > div {
+  width: 45%; /* add this to set the width of each input-group */
+  margin-bottom: 5px;
+}
+
+form > div:last-child {
+  width: 100%; /* add this to set the width of the last input-group */
+}
+form label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+  width: 100%; /* add this to set the label width to 100% */
+}
+
+form select,
+form input[type="number"] {
+  padding: 10px;
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  width: 100%; /* add this to set the input width to 100% */
+}
+ p {
+<!--        background-image: url('pics/calculator_bg.png');-->
+        background-size: cover;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      form input[type="submit"] {
+          background-color: #333;
+          color: #fff;
+          padding: 10px;
+          margin-bottom: 20px;
+          border: none;
+          border-radius: 5px;
+          box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+          font-size: 16px;
+          width: 100%; /* add this to set the input width to 100% */
+      }
+
+      form input[type="submit"]:hover {
+        background-color: #555;
+      }
+
+      .results {
+        margin-top: 30px;
+        text-align: center;
+      }
+
+      .results h2 {
+        margin-bottom: 20px;
+      }
+
+    </style>
+</head>
+<body>
+<!--<p style="background-image: url('pics/calculator_bg.jpg');">-->
+
+<div class="container">
+<!--    <p style="background-image: url('{{ url_for('static', filename='pics/calculator_bg.png') }}');">-->
+    <h1>Risk Score Card Calculator</h1>
+    <form action="/calculate" method="POST">
+        <div class="input-group">
+            <label for="age">Age:</label>
+            <input type="number" step="any" id="age" name="age" required>
+        </div>
+
+        <div class="input-group">
+            <label for="fpsa">FPSA:</label>
+            <input type="number" step="any" id="fpsa" name="fpsa" required>
+        </div>
+
+        <div class="input-group">
+            <label for="drink_state">Drink State:</label>
+            <select id="drink_state" name="drink_state">
+                <option value="0">Never</option>
+                <option value="1">Socially</option>
+                <option value="2">Frequently</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label for="RBCs">RBCs:</label>
+            <input type="number" step="any" id="RBCs" name="RBCs" required>
+        </div>
+
+        <div class="input-group">
+            <label for="LDL">LDL:</label>
+            <input type="number" step="any" id="LDL" name="LDL" required>
+        </div>
+
+        <div class="input-group">
+            <label for="smoke_state">Smoke State:</label>
+            <select id="smoke_state" name="smoke_state">
+                <option value="0">Never</option>
+                <option value="1">Past</option>
+                <option value="2">Current</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label for="GHb_A1c">GHb_A1c:</label>
+            <input type="number" step="any" id="GHb_A1c" name="GHb_A1c" required>
+        </div>
+
+        <div class="input-group">
+            <label for="PLT">PLT:</label>
+            <input type="number" step="any" id="PLT" name="PLT" required>
+        </div>
+
+        <div class="input-group">
+            <label for="has_surgery">Has Surgery:</label>
+            <select id="has_surgery" name="has_surgery">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label for="WBC">WBC:</label>
+            <input type="number" step="any" id="WBC" name="WBC" required>
+        </div>
+
+        <div class="input-group">
+            <label for="PCV">PCV:</label>
+            <input type="number" step="any" id="PCV" name="PCV" required>
+        </div>
+
+        <div class="input-group">
+        <input type="submit" value="Calculate">
+        </div>
+
+    </form>
+
+    {% if prediction %}
+    <div class="results">
+        <h2>Risk Group: {{ prediction }}</h2>
+    </div>
+    {% endif %}
+</div>
+</body>
+</html>
