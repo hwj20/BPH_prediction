@@ -2,9 +2,50 @@
 <html>
 <head>
     <title>Risk Score Card Calculator</title>
+    <style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f2f2f2;
+		}
+		.container {
+			margin: 50px auto;
+			padding: 20px;
+			background-color: #fff;
+			border-radius: 10px;
+			box-shadow: 0 0 10px rgba(0,0,0,0.1);
+			max-width: 500px;
+		}
+		h1 {
+			text-align: center;
+			color: #333;
+		}
+		.result {
+			margin-top: 30px;
+			font-size: 24px;
+			font-weight: bold;
+			text-align: center;
+		}
+        .high {
+            color: red;
+        }
+        .medium {
+            color: yellow;
+        }
+        .low {
+            color: green;
+        }
+	</style>
 </head>
 <body>
-<h1>Risk Score Card Calculator</h1>
-<p>Your risk group is: {{ risk_group }}</p>
+<div class="container">
+    <h1>Risk Score Card Calculator</h1>
+    {% if risk_group == "HIGH" %}
+    <p class="result">Your risk group is: <span class="high">{{ risk_group }}</span></p>
+    {% elif risk_group == "MEDIUM" %}
+    <p class="result">Your risk group is: <span class="medium">{{ risk_group }}</span></p>
+    {% elif risk_group == "LOW" %}
+    <p class="result">Your risk group is: <span class="low">{{ risk_group }}</span></p>
+    {% endif %}
+</div>
 </body>
 </html>

@@ -12,7 +12,7 @@ from PatientTypeUtils import *
 unit_map = {}
 data = []
 
-read_file = pd.read_csv('data/test_res.csv', low_memory=False, encoding='utf-8')
+read_file = pd.read_csv('../data/test_res.csv', low_memory=False, encoding='utf-8')
 # 读取检验值
 for index, row in read_file.iterrows():
     unit_name = row['单位']
@@ -52,7 +52,7 @@ for index, row in read_file.iterrows():
     if unit_name != '':
         unit_map[label_name] = unit_name
 
-read_file = pd.read_csv('data/age_id.csv', low_memory=False, encoding='gbk')
+read_file = pd.read_csv('../data/age_id.csv', low_memory=False, encoding='gbk')
 # 读取年龄
 for index, row in read_file.iterrows():
     age = row['年龄']
@@ -70,7 +70,7 @@ for index, row in read_file.iterrows():
 
     target_patient.age = age
 
-read_file = pd.read_csv('data/disease.csv', low_memory=False, encoding='utf-8')
+read_file = pd.read_csv('../data/disease.csv', low_memory=False, encoding='utf-8')
 # 读取伴随疾病
 for index, row in read_file.iterrows():
     patient_number = row['患者唯一号']
@@ -99,7 +99,7 @@ for index, row in read_file.iterrows():
         target_patient.has_other_disease = True
         target_patient.other_disease_info = other_disease
 
-read_file = pd.read_csv('data/other_info.csv', low_memory=False, encoding='utf-8')
+read_file = pd.read_csv('../data/other_info.csv', low_memory=False, encoding='utf-8')
 # 读取伴随疾病
 for index, row in read_file.iterrows():
     patient_number = row['患者唯一号']

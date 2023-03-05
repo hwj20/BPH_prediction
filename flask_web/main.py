@@ -41,7 +41,7 @@ def calculate():
                # float(is_BPH)]]
 
     # Load the saved SVM model
-    with open('../checkpoints/GBCmodel.pkl', 'rb') as f:
+    with open('../checkpoints/MLPmodel.pkl', 'rb') as f:
         svm_model = pickle.load(f)
         # Use the loaded SVM model to predict the label score
         label_score = svm_model.predict(X_test)

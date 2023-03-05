@@ -1,7 +1,7 @@
 import pandas as pd
 
-patient_data_path = 'data/patient_data.csv'
-health_data_path= 'data/healthy_data.csv'
+patient_data_path = '../data/patient_data.csv'
+health_data_path= '../data/healthy_data.csv'
 # Load the first CSV file into a pandas DataFrame
 df1 = pd.read_csv(patient_data_path)
 

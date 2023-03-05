@@ -70,6 +70,11 @@ def train(train_features, train_labels, test_features, test_labels, method='GBC'
     # Use the forest's predict method on the test data
     predictions = mdl.predict(test_features)
     # Calculate the absolute errors
+    for i in range(test_features.shape[0]):
+        row = test_features[i]
+        if row[0] == 44 and row[-3] == 0.239:
+            print('hit')
+            print(method,mdl.predict(row))
     errors = abs(predictions - test_labels)
     # Print out the mean absolute error (mae)
     print('Mean Absolute Error:', round(np.mean(errors), 2), 'degrees.')

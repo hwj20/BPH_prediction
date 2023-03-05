@@ -12,7 +12,7 @@ from PatientTypeUtils import *
 unit_map = {}
 data = []
 
-read_file = pd.read_csv('data/healthy_data_origin.csv',  encoding='utf-8')
+read_file = pd.read_csv('../data/healthy_data_origin.csv', encoding='utf-8')
 
 # 读取检验值
 for index, row in read_file.iterrows():

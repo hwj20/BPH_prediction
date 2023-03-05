@@ -1,14 +1,14 @@
 import math
 
-from feature_select import *
-from ml_utils import train, train_all
+from utils.feature_select import *
+from utils.ml_utils import train_all
 
 import numpy
 import pandas as pd
 
 
 #
-# TODO 吸烟 手术史 病史 饮酒---数据清洗
+# TODO 手术史 病史---数据清洗
 
 def count_label(read_file):
     """

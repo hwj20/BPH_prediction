@@ -52,8 +52,7 @@ def process_data(read_file):
             if counts[0] > threshold * counts[1] or counts[1] > threshold * counts[0]:
                 # Drop the column if the ratio is too high
                 cols_to_drop.append(col)
-    print('Drop ')
-    print(cols_to_drop)
+    print('Drop ', cols_to_drop)
     read_file = read_file.drop(cols_to_drop, axis=1)
     # df = read_file
     # df = df.dropna()
@@ -64,9 +63,10 @@ def process_data(read_file):
 
     # input()
     read_file.fillna(read_file.mean(), inplace=True)
+    return read_file
     # print(read_file.describe())
     # count_label(read_file)
-    return read_file
+
 
 
 def load_data(read_file):
@@ -98,7 +98,6 @@ def find_top_feature(read_file):
     # Calculate Gini indices of features
     tree = DecisionTreeClassifier()
     tree.fit(X, y)
-    gi_scores = tree.feature_importances_
 
     # Select top-k features based on Gini indices
     forest = ExtraTreesClassifier(n_estimators=250, random_state=42)
