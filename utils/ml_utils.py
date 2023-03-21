@@ -69,15 +69,16 @@ def train(train_features, train_labels, test_features, test_labels, method='GBC'
             pickle.dump(mdl, f)
     # Use the forest's predict method on the test data
     predictions = mdl.predict(test_features)
+    # for i in range(test_features.shape[0]):
+    #     row = test_features[i]
+    #     if row[0] == 44 and row[-3] == 0.239:
+    #         print('hit')
+    #         print(method,mdl.predict(row))
+
     # Calculate the absolute errors
-    for i in range(test_features.shape[0]):
-        row = test_features[i]
-        if row[0] == 44 and row[-3] == 0.239:
-            print('hit')
-            print(method,mdl.predict(row))
     errors = abs(predictions - test_labels)
     # Print out the mean absolute error (mae)
-    print('Mean Absolute Error:', round(np.mean(errors), 2), 'degrees.')
+    print('Mean Absolute Error:', np.mean(errors), 'degrees.')
 
     # threshold
     pred = []
@@ -91,7 +92,7 @@ def train(train_features, train_labels, test_features, test_labels, method='GBC'
     # mape = 100 * (errors / test_labels)
     # Calculate and display accuracy
     accuracy = accuracy_score(test_labels, pred)
-    print('Accuracy:', round(accuracy, 2))
+    print('Accuracy:', accuracy)
 
     # assuming pred is the predicted probability of positive class (class 1)
     auc = roc_auc_score(test_labels, pred)

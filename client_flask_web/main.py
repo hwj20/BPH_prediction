@@ -41,16 +41,14 @@ def calculate():
                # float(is_BPH)]]
 
     # Load the saved SVM model
-    with open('../checkpoints/MLPmodel.pkl', 'rb') as f:
-        svm_model = pickle.load(f)
+    with open('../checkpoints/DecisionTreemodel.pkl', 'rb') as f:
+        model = pickle.load(f)
         # Use the loaded SVM model to predict the label score
-        label_score = svm_model.predict(X_test)
+        label_score = model.predict(X_test)
 
     # Determine risk group based on risk score
-    if label_score >= 0.75:
+    if label_score >= 0.5:
         risk_group = 'HIGH'
-    elif label_score > 0.25:
-        risk_group = 'MEDIUM'
     else:
         risk_group = 'LOW'
 

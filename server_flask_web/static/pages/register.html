@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <!-- 页面meta -->
+
+    <meta charset="utf-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>样机模型管理平台</title>
+
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+
+    <!-- 引入样式 -->
+
+    <link rel="stylesheet" href="../plugins/elementui/index.css">
+
+    <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="../css/style.css">
+
+</head>
+
+<body class="hold-transition">
+
+<div id="app">
+
+    <div class="content-header">
+
+        <h1>用户注册</h1>
+
+    </div>
+
+    <div class="app-container">
+
+        <div class="box">
+            <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
+
+                <el-row>
+                    <el-col :span="5">
+                        <el-form-item label="用户头像" prop="avatar">
+                            <el-upload
+                                    ref="upload"
+                                    class="avatar-uploader"
+                                        action="http://42.192.55.86/model/upload"
+                                    :auto-upload="false"
+                                    :show-file-list="false"
+                                    :data="formData"
+                                    :on-change="handleChange"
+                                    :before-upload="beforeAvatarUpload">
+                                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+
+                    <el-col :span="5">
+
+                        <el-form-item label="用户名" prop="username">
+
+                            <el-input v-model="formData.username"/>
+
+                        </el-form-item>
+
+                    </el-col>
+                </el-row>
+                <el-row>
+
+                    <el-col :span="5">
+
+                        <el-form-item label="密码" prop="password">
+
+                            <el-input type="password" v-model="formData.password"/>
+
+                        </el-form-item>
+
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="5">
+                        <el-form-item label="用户类型">
+                            <div class="me" v-for="(item, index) in formData.roles" :key="index">
+                                <!-- 输入框v-model绑定数组 -->
+                                <el-select v-model="item.id" placeholder="请选择">
+                                    <el-option
+                                            v-for="item in roles"
+                                            :key="item.id"
+                                            :label="item.description"
+                                            :value="item.id">
+                                    </el-option>
+                                </el-select>
+                                <!-- 删除小图标 -->
+                                <i
+                                        v-show="show(index)"
+                                        @click="deleteItem(formData.roles,index)"
+                                        class="el-icon-remove-outline dingwei"
+                                ></i>
+                            </div>
+                            <el-button type="text" size="small" @click="addItem(formData.roles)">+增加类型</el-button>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-form-item style="width:20%;">
+                    <el-button type="primary" @click="handleRegister()">注册</el-button>
+                </el-form-item>
+
+            </el-form>
+        </div>
+
+    </div>
+
+</div>
+</div>
+</body>
+
+<!-- 引入组件库 -->
+
+<script src="../js/vue.js"></script>
+
+<script src="../plugins/elementui/index.js"></script>
+
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+
+<script src="../js/axios-0.18.0.js"></script>
+
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data:{
+            formData: {
+                roles:[{id:''}]
+            },//表单数据
+            rules: {},
+            roles: [{id:2,description:"模型管理员"},{id:3,description:"设备管理员"}],
+            imageUrl: '',
+            fileList: [],
+        },
+
+        //钩子函数，VUE对象初始化完成后自动执行
+        created() {
+        },
+
+        methods: {
+            show(i) {
+                return true
+            },
+            // 根据索引删除对应哪一项
+            deleteItem(data, i) {
+                data.splice(i, 1)
+            },
+            addItem(data) {
+                data.push({id: ""});
+            },
+            //添加
+            handleRegister(){
+                var fd = new FormData();
+                fd.append('file',this.fileList[0].raw);
+                fd.append('user',JSON.stringify(this.formData));
+                axios.post("/user/register",fd).then((res)=>{
+                    if(res.data.flag){
+                        this.$message.success("注册成功，即将跳转登录界面");
+                        setTimeout(() => {
+                            window.location.href = "login.html";
+                        }, 1000);
+                    }else {
+                        this.$message.error(res.data.data);
+                    }
+                })
+            },
+            //
+            handleChange(file, fileList) {
+                this.fileList = fileList;
+                this.imageUrl = URL.createObjectURL(file.raw);
+            },
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isJPG) {
+                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isJPG && isLt2M;
+            }
+        }
+    })
+</script>
+<style>
+    .me .el-input {
+        display: inline;
+    }
+
+    .el-select{
+        width: 100%;
+    }
+    .avatar-uploader .el-upload {
+        border: 1px dashed #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    .avatar-uploader .el-upload:hover {
+        border-color: #409EFF;
+    }
+    .avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        width: 178px;
+        height: 178px;
+        line-height: 178px;
+        text-align: center;
+    }
+    .avatar {
+        width: 178px;
+        height: 178px;
+        display: block;
+    }
+</style>
+
+</html>

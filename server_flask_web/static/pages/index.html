@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <!-- 页面meta -->
+
+    <meta charset="utf-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>样机模型管理平台</title>
+
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+
+    <!-- 引入样式 -->
+
+    <link rel="stylesheet" href="../plugins/elementui/index.css">
+
+    <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="../css/style.css">
+
+</head>
+
+<body class="hold-transition">
+
+    <div id="app">
+
+        <div class="content-header">
+
+            <h1>功能列表</h1>
+
+        </div>
+
+        <div class="app-container">
+            <div class="box">
+                <el-table :data="tableData">
+                    <el-table-column
+                            type="index"
+                            align="center"
+                            label="序号">
+                    </el-table-column>
+                    <el-table-column
+                            prop="function"
+                            label="功能"
+                            align="center">
+                    </el-table-column>
+                    <el-table-column
+                            prop="link"
+                            label="链接"
+                            align="center">
+                        <template slot-scope="scope">
+                            <el-button @click="handleClick(scope.row)" type="primary">go</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+        </div>
+    </div>
+</body>
+
+<!-- 引入组件库 -->
+
+<script src="../js/vue.js"></script>
+
+<script src="../plugins/elementui/index.js"></script>
+
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+
+<script src="../js/axios-0.18.0.js"></script>
+
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data:{
+            tableData:[
+                {
+                    function:"用户登录",
+                    link:"../pages/login.html"
+                },
+                {
+                    function:"模型列表",
+                    link:"../pages/lookup_model.html"
+                },
+                {
+                    function:"添加模型",
+                    link:"../pages/add_model.html"
+                },
+                {
+                    function:"设备列表",
+                    link:"../pages/lookup_device.html"
+                },
+                {
+                    function:"添加设备",
+                    link:"../pages/add_device.html"
+                },
+            ],
+        },
+        //钩子函数，VUE对象初始化完成后自动执行
+        created() {
+        },
+        methods: {
+            handleClick(row){
+                window.location.href = row.link;
+            },
+        },
+    })
+</script>
+
+</html>

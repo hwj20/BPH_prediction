@@ -10,6 +10,8 @@ from sklearn.ensemble import ExtraTreesClassifier
 def process_data(read_file):
     # Create a list of columns to be dropped
     cols_to_drop = ['GLU', 'ACR', '登记号', '病案号', '就诊ID', 'patient_unique_number', 'has_other_disease']
+    cols_to_drop.append('PBG')
+    cols_to_drop.append('FBG')
 
     # Drop the columns in one step
     read_file = read_file.drop(cols_to_drop, axis=1)
@@ -29,7 +31,8 @@ def process_data(read_file):
     plt.title("Pearson Correlation Heatmap")
 
     # Show the plot
-    # plt.show()
+    plt.show()
+    input()
 
     # 删除其中一方太少了的，并填补空缺值
     read_file = read_file.astype({col: np.int8 for col in read_file.columns[read_file.dtypes == np.bool_]})
@@ -66,7 +69,6 @@ def process_data(read_file):
     return read_file
     # print(read_file.describe())
     # count_label(read_file)
-
 
 
 def load_data(read_file):

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <!-- 页面meta -->
+
+    <meta charset="utf-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>样机模型管理平台</title>
+
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+
+    <!-- 引入样式 -->
+
+    <link rel="stylesheet" href="../plugins/elementui/index.css">
+
+    <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="../css/style.css">
+
+</head>
+
+<body class="hold-transition">
+
+<div id="app">
+
+    <div class="content-header">
+
+        <h1>请先登录</h1>
+
+    </div>
+
+    <div class="app-container">
+
+        <div class="box">
+            <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
+
+                <el-row>
+
+                    <el-col :span="5">
+
+                        <el-form-item label="用户名" prop="username">
+
+                            <el-input v-model="formData.username"/>
+
+                        </el-form-item>
+
+                    </el-col>
+                </el-row>
+                <el-row>
+
+                    <el-col :span="5">
+
+                        <el-form-item label="密码" prop="password">
+
+                            <el-input type="password" v-model="formData.password"/>
+
+                        </el-form-item>
+
+                    </el-col>
+                </el-row>
+
+                <el-form-item style="width:20%;">
+                    <el-button type="primary" @click="handleLogin()">登录</el-button>
+                    <el-button type="primary" @click="handleRegister()">注册</el-button>
+                </el-form-item>
+
+            </el-form>
+        </div>
+
+    </div>
+
+</div>
+</div>
+</body>
+
+<!-- 引入组件库 -->
+
+<script src="../js/vue.js"></script>
+
+<script src="../plugins/elementui/index.js"></script>
+
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+
+<script src="../js/axios-0.18.0.js"></script>
+
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data:{
+            formData: {},//表单数据
+            rules: {},
+        },
+
+        //钩子函数，VUE对象初始化完成后自动执行
+        created() {
+        },
+
+        methods: {
+            //添加
+            handleLogin () {
+                axios.post("/user/login",this.formData).then((res)=>{
+                    if(res.data.flag){
+                        this.$message.success("成功啦");
+                        window.location.href = "index.html";
+                    }else {
+                        this.$message.error(res.data.data);
+                    }
+                })
+            },
+            handleRegister(){
+                window.location.href = "register.html";
+            }
+        }
+    })
+</script>
+
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <!-- 页面meta -->
+
+    <meta charset="utf-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>样机模型管理平台</title>
+
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+
+    <!-- 引入样式 -->
+
+    <link rel="stylesheet" href="../plugins/elementui/index.css">
+
+    <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="../css/style.css">
+
+</head>
+
+<body class="hold-transition">
+
+<div id="app">
+
+    <div class="content-header">
+
+        <h1>模型添加</h1>
+
+    </div>
+
+    <div class="app-container">
+
+        <div class="box">
+
+            <!-- 主页面      -->
+            <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="120px">
+
+                <el-row>
+                    <el-col  :span="5">
+
+                        <el-form-item label="模型文件">
+
+                            <el-upload
+                                    ref="upload"
+                                    class="upload-demo"
+                                    action="http://42.192.55.86/model/upload"
+                                    :auto-upload="false"
+                                    :data="upData"
+                                    :on-success="handle_success">
+                                <el-button slot="trigger" type="primary">选取文件</el-button>
+                            </el-upload>
+                        </el-form-item>
+
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="5">
+
+                        <el-form-item label="模型名称" prop="id">
+
+                            <el-input v-model="formData.id"/>
+
+                        </el-form-item>
+
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="5">
+
+                        <el-form-item label="模型功能" prop="type">
+
+                            <el-select v-model="formData.type" placeholder="请选择">
+                                <el-option
+                                        v-for="item in types"
+                                        :key="item.id"
+                                        :label="item.func"
+                                        :value="item.id">
+                                </el-option>
+                            </el-select>
+
+                        </el-form-item>
+
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="5">
+
+                        <el-form-item label="适用对象" prop="belongTo">
+
+                            <el-select v-model="formData.belongTo" placeholder="请选择">
+                                <el-option
+                                        v-for="item in users"
+                                        :key="item.id"
+                                        :label="item.username"
+                                        :value="item.id">
+                                </el-option>
+                            </el-select>
+
+                        </el-form-item>
+
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="5">
+                        <el-form-item label="输入数据秒数" prop="second">
+
+                            <el-input v-model="formData.second"/>
+
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="5">
+                        <el-form-item label="输入数据维度">
+                            <div class="me" v-for="(item, index) in formData.inputShape" :key="index">
+                                <!-- 输入框v-model绑定数组 -->
+                                <div>
+                                    <el-input v-model.trim="item.value"/>
+                                </div>
+                                <!-- 删除小图标 -->
+                                <i
+                                        v-show="show(index)"
+                                        @click="deleteItem(formData.inputShape,index)"
+                                        class="el-icon-remove-outline dingwei"
+                                ></i>
+                            </div>
+                            <el-button type="text" size="small" @click="addItem(formData.inputShape)">+增加维度</el-button>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="5">
+                        <el-form-item label="输入数据类型">
+                            <div class="itemitem" v-for="(item, index) in formData.inputDatas" :key="index">
+                                <!-- 输入框v-model绑定数组 -->
+                                <el-select v-model="item.value" placeholder="请选择">
+                                    <el-option
+                                            v-for="item in datas"
+                                            :key="item.key"
+                                            :label="`${item.name} ${item.batchSize}`"
+                                            :value="item.key">
+                                    </el-option>
+                                </el-select>
+                                <!-- 删除小图标 -->
+                                <i
+                                        v-show="show(index)"
+                                        @click="deleteItem(formData.inputDatas,index)"
+                                        class="el-icon-remove-outline dingwei"
+                                ></i>
+                            </div>
+                            <el-button type="text" size="small" @click="addItem(formData.inputDatas)">+增加类型</el-button>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="5">
+                        <el-form-item label="输出数据类型" prop="outputData">
+
+                            <el-select v-model="formData.outputData" placeholder="请选择">
+                                <el-option
+                                        v-for="item in datas"
+                                        :key="item.key"
+                                        :label="`${item.name} ${item.batchSize}`"
+                                        :value="item.key">
+                                </el-option>
+                            </el-select>
+
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col  :span="5">
+                        <el-form-item label="缺少数据类型？">
+                            <el-button type="info" @click="handleCreateData()">点我添加</el-button>
+                            <el-button type="primary" @click="handleAdd">确认提交</el-button>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-form>
+
+            <!-- 新增标签弹层 -->
+            <div class="add-form">
+
+                <el-dialog title="新增数据类型" :visible.sync="dialogFormVisible">
+
+                    <el-form ref="DatasAddForm" :model="Datas" :rules="rules" label-position="right" label-width="100px">
+
+                        <el-row>
+
+                            <el-col :span="12">
+
+                                <el-form-item label="数据名称" prop="name">
+
+                                    <el-input v-model="Datas.name"/>
+
+                                </el-form-item>
+
+                            </el-col>
+
+                            <el-col :span="12">
+
+                                <el-form-item label="数据长度" prop="batchSize">
+
+                                    <el-input v-model="Datas.batchSize"/>
+
+                                </el-form-item>
+
+                            </el-col>
+
+                        </el-row>
+
+
+                        <el-row>
+
+                            <el-col :span="24">
+
+                                <el-form-item label="数据描述">
+
+                                    <el-input v-model="Datas.description" type="textarea"></el-input>
+
+                                </el-form-item>
+
+                            </el-col>
+
+                        </el-row>
+
+                    </el-form>
+
+                    <div slot="footer" class="dialog-footer">
+
+                        <el-button @click="cancel()">取消</el-button>
+
+                        <el-button type="primary" @click="handleSubmitData()">确定</el-button>
+
+                    </div>
+
+                </el-dialog>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+
+<!-- 引入组件库 -->
+
+<script src="../js/vue.js"></script>
+
+<script src="../plugins/elementui/index.js"></script>
+
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+
+<script src="../js/axios-0.18.0.js"></script>
+
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            formData: {
+                inputShape: [{value: ''}],
+                inputDatas: [{value: ''}]
+            },
+            users: [],
+            types: [],
+            datas: [],
+            models:[],
+            dialogFormVisible: false,//数据添加表单是否可见
+            Datas:{}
+        },
+
+        computed: {
+            upData: function () {
+                return {
+                    model: JSON.stringify(this.formData)
+                    // body:this.formData
+                }
+            },
+            rules() {
+                var validateId = (rule, value, callback) => {
+                    var flag = 0;
+                    this.models.some(function(v){
+                        if(v.id == value) {
+                            flag = 1;
+                            return true;
+                        }
+                    });
+                    if(flag==0){
+                        console.log("pass");
+                        callback();
+                    }else {
+                        console.log("find");
+                        callback(new Error("模型名称已存在"));
+                    }
+                };
+                return {
+                    id: [
+                        {required: true, message: '模型名称为必填项', trigger: 'blur'},
+                        {validator: validateId, trigger: 'blur'}
+                    ],
+                    second:[
+                        {required: true, message: '输入秒数为必填项', trigger: 'blur'},
+                        {pattern: /^[1-9][0-9]*$/, message: '仅输入正整数' }
+                    ],
+                    value:[
+                        {required: true, message: '输入维度为必填项', trigger: 'blur'},
+                        {pattern: /^[1-9][0-9]*$/, message: '仅输入正整数' }
+                    ]
+                }
+            }
+        },
+
+            //钩子函数，VUE对象初始化完成后自动执行
+            created() {
+                this.init();
+            },
+
+            methods: {
+                // 从第三项开始才展示
+                show(i) {
+                    // if (i == 0) {
+                    //     return false
+                    // } else {
+                        return true
+                    // }
+                },
+                // 根据索引删除对应哪一项
+                deleteItem(data, i) {
+                    data.splice(i, 1)
+                },
+                addItem(data) {
+                    data.push({value: ""});
+                },
+                //初始化表单下拉框数据
+                init() {
+                    axios.get("/user/findAll").then((res) => {
+                        this.users = res.data.data;
+                    });
+                    axios.get("/data/findAll").then((res) => {
+                        this.datas = res.data.data;
+                    });
+                    axios.get("/type/findAll").then((res) => {
+                        this.types = res.data.data;
+                    });
+                    axios.get("/model/findAll").then((res) => {
+                        this.models = res.data.data;
+                    });
+                },
+                //添加
+                handleAdd() {
+                    this.$refs.upload.submit();
+                },
+                handle_success(res) {
+                    if (res.flag == true) {
+                        this.$message.success("添加成功，即将跳转模型列表");
+                        setTimeout(() => {
+                            window.location.href = "lookup_model.html";
+                        }, 1000);
+                    } else {
+                        this.$message.error(res.data);
+                    }
+                },
+                handleCreateData(){
+                    this.dialogFormVisible = true;
+                },
+
+                handleSubmitData(){
+                    axios.post("/data/addData",this.Datas).then((res)=>{
+                        if(res.data.flag){
+                            this.dialogFormVisible = false;
+                            console.log(res.data.data);
+                            this.$message.success(res.data.data);
+                        }else {
+                            this.$message.error(res.data.data);
+                        }
+                    }).finally(()=>{
+                        axios.get("/data/findAll").then((res) => {
+                            this.datas = res.data.data;
+                        });
+                    });
+                    this.Datas = {};
+                },
+
+                //取消
+                cancel(){
+                    this.dialogFormVisible = false;
+                    this.$message.info("当前操作取消");
+                    this.Datas = {};
+                },
+            }
+        })
+</script>
+<style>
+    /*.itemitem {*/
+    /*    float: left;*/
+    /*}*/
+
+    /*.me {*/
+    /*    width: 13%;*/
+    /*    float: left;*/
+    /*}*/
+
+    .me .el-input {
+        display: inline;
+    }
+
+    .el-select{
+        width: 100%;
+    }
+</style>
+</html>
