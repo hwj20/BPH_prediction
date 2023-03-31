@@ -12,10 +12,6 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-# @app.route('/pics', methods=['GET'])
-# def get_pic():
-#     request
-
 @app.route('/calculate', methods=['POST'])
 def calculate():
     # Get input values from the form
@@ -40,8 +36,11 @@ def calculate():
                float(PLT), float(has_surgery), float(WBC), float(PCV)]]
                # float(is_BPH)]]
 
+    model_name = 'DecisionTreemodel.pkl'
+    with open('../checkpoints/selected_model.txt', 'r') as f:
+        model_name = f.read()
     # Load the saved SVM model
-    with open('../checkpoints/DecisionTreemodel.pkl', 'rb') as f:
+    with open('../checkpoints/'+model_name, 'rb') as f:
         model = pickle.load(f)
         # Use the loaded SVM model to predict the label score
         label_score = model.predict(X_test)

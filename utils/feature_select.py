@@ -7,6 +7,12 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import ExtraTreesClassifier
 
 
+# Index(['patient_unique_number', '就诊ID', '登记号', '病案号', 'age', 'is_BPH', 'PCV',
+#        'WBC', 'RBCs', 'GHb_A1c', 'GLU', 'FPSA', 'TAG', 'LDL', 'HDL', 'CHOL',
+#        'Glc', 'UA', 'PLT', 'PRO', 'ACR', 'PBG', 'FBG', 'has_other_disease',
+#        'has_surgery', 'drink_state', 'smoke_state'],
+#       dtype='object')
+
 def process_data(read_file):
     # Create a list of columns to be dropped
     cols_to_drop = ['GLU', 'ACR', '登记号', '病案号', '就诊ID', 'patient_unique_number', 'has_other_disease']
@@ -31,8 +37,8 @@ def process_data(read_file):
     plt.title("Pearson Correlation Heatmap")
 
     # Show the plot
-    plt.show()
-    input()
+    # plt.show()
+    # input()
 
     # 删除其中一方太少了的，并填补空缺值
     read_file = read_file.astype({col: np.int8 for col in read_file.columns[read_file.dtypes == np.bool_]})
@@ -68,7 +74,6 @@ def process_data(read_file):
     read_file.fillna(read_file.mean(), inplace=True)
     return read_file
     # print(read_file.describe())
-    # count_label(read_file)
 
 
 def load_data(read_file):

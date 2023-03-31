@@ -83,30 +83,30 @@
                     </el-col>
                 </el-row>
 
-                <el-row>
-                    <el-col :span="5">
-                        <el-form-item label="用户类型">
-                            <div class="me" v-for="(item, index) in formData.roles" :key="index">
-                                <!-- 输入框v-model绑定数组 -->
-                                <el-select v-model="item.id" placeholder="请选择">
-                                    <el-option
-                                            v-for="item in roles"
-                                            :key="item.id"
-                                            :label="item.description"
-                                            :value="item.id">
-                                    </el-option>
-                                </el-select>
-                                <!-- 删除小图标 -->
-                                <i
-                                        v-show="show(index)"
-                                        @click="deleteItem(formData.roles,index)"
-                                        class="el-icon-remove-outline dingwei"
-                                ></i>
-                            </div>
-                            <el-button type="text" size="small" @click="addItem(formData.roles)">+增加类型</el-button>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+<!--                <el-row>-->
+<!--                    <el-col :span="5">-->
+<!--                        <el-form-item label="用户类型">-->
+<!--                            <div class="me" v-for="(item, index) in formData.roles" :key="index">-->
+<!--                                &lt;!&ndash; 输入框v-model绑定数组 &ndash;&gt;-->
+<!--                                <el-select v-model="item.id" placeholder="请选择">-->
+<!--                                    <el-option-->
+<!--                                            v-for="item in roles"-->
+<!--                                            :key="item.id"-->
+<!--                                            :label="item.description"-->
+<!--                                            :value="item.id">-->
+<!--                                    </el-option>-->
+<!--                                </el-select>-->
+<!--                                &lt;!&ndash; 删除小图标 &ndash;&gt;-->
+<!--                                <i-->
+<!--                                        v-show="show(index)"-->
+<!--                                        @click="deleteItem(formData.roles,index)"-->
+<!--                                        class="el-icon-remove-outline dingwei"-->
+<!--                                ></i>-->
+<!--                            </div>-->
+<!--&lt;!&ndash;                            <el-button type="text" size="small" @click="addItem(formData.roles)">+增加类型</el-button>&ndash;&gt;-->
+<!--                        </el-form-item>-->
+<!--                    </el-col>-->
+<!--                </el-row>-->
 
                 <el-form-item style="width:20%;">
                     <el-button type="primary" @click="handleRegister()">注册</el-button>
@@ -167,6 +167,7 @@
                 axios.post("/user/register",fd).then((res)=>{
                     if(res.data.flag){
                         this.$message.success("注册成功，即将跳转登录界面");
+                        this.$message.success("您的用户ID是：" + res.data.id);
                         setTimeout(() => {
                             window.location.href = "login.html";
                         }, 1000);

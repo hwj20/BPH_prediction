@@ -16,11 +16,11 @@
 
     <!-- 引入样式 -->
 
-    <link rel="stylesheet" href="../plugins/elementui/index.css">
+    <link rel="stylesheet" href="static/plugins/elementui/index.css">
 
-    <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="static/plugins/font-awesome/css/font-awesome.min.css">
 
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="static/css/style.css">
 
 </head>
 
@@ -63,13 +63,13 @@
 
 <!-- 引入组件库 -->
 
-<script src="../js/vue.js"></script>
+<script src="static/js/vue.js"></script>
 
-<script src="../plugins/elementui/index.js"></script>
+<script src="static/plugins/elementui/index.js"></script>
 
-<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="static/js/jquery.min.js"></script>
 
-<script src="../js/axios-0.18.0.js"></script>
+<script src="static/js/axios-0.18.0.js"></script>
 
 <script>
     var vue = new Vue({
@@ -78,23 +78,19 @@
             tableData:[
                 {
                     function:"用户登录",
-                    link:"../pages/login.html"
+                    link:"static/pages/login.html"
                 },
                 {
                     function:"模型列表",
-                    link:"../pages/lookup_model.html"
+                    link:"static/pages/lookup_model.html"
+                },
+                {
+                    function:"上传数据",
+                    link:"static/pages/upload_data.html"
                 },
                 {
                     function:"添加模型",
-                    link:"../pages/add_model.html"
-                },
-                {
-                    function:"设备列表",
-                    link:"../pages/lookup_device.html"
-                },
-                {
-                    function:"添加设备",
-                    link:"../pages/add_device.html"
+                    link:"static/pages/add_model.html"
                 },
             ],
         },
