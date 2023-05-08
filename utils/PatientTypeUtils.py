@@ -39,6 +39,11 @@ def get_patient_by_number(patient_unique_number, patient_data: list):
 
 
 def get_first_chinese_char(text):
+    """
+    find the first Chinese Character
+    :param text: input text
+    :return: first Chinese char
+    """
     match = re.search(r'[\u4e00-\u9fa5]', text)  # This regular expression pattern match any unicode character from
     # '\u4e00' to '\u9fa5' which is the range for all chinese characters
     if match:

@@ -7,6 +7,7 @@ import numpy as np
 
 from utils.feature_select import process_data
 
+
 def evaluate():
     # Evaluate model
     with torch.no_grad():
@@ -22,20 +23,34 @@ def evaluate():
             correct += (predicted == labels).sum().item()
             running_loss += loss.item()
         print(f"Epoch {epoch + 1} loss: {running_loss / len(X_train)}")
-        print(f"Accuracy: {correct/total}")
+        print(f"Accuracy: {correct / total}")
+
 
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
-        self.fc1 = nn.Linear(X_train.shape[1], 64)
-        self.fc2 = nn.Linear(64, 64)
-        self.fc3 = nn.Linear(64, 1)
+        self.conv1 = nn.Conv1d(in_channels=1, out_channels=16, kernel_size=3)
+        self.conv2 = nn.Conv1d(in_channels=16, out_channels=16, kernel_size=3)
+        self.fc1 = nn.Linear(32, 1)
+        self.dropout = nn.Dropout(0.2)
 
     def forward(self, x):
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
-        x = torch.sigmoid(self.fc3(x))
+        x = self.conv1(x)
+        x = F.relu(x)
+        x = F.max_pool1d(x, kernel_size=2)
+        x = self.dropout(x)
+
+        x = self.conv2(x)
+        x = F.relu(x)
+        x = F.max_pool1d(x, kernel_size=2)
+        x = self.dropout(x)
+
+        x = x.view(-1)  # adjust the shape of the tensor
+        x = self.fc1(x)
+        x = torch.sigmoid(x)
         return x
+
+
 # Load data
 data = pd.read_csv("data/train.csv")
 data = process_data(data)
@@ -46,7 +61,6 @@ y = data["is_BPH"]
 X = np.array(X)
 y = np.array(y)
 
-
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(device)
 
@@ -55,6 +69,10 @@ from sklearn.model_selection import train_test_split
 
 torch.manual_seed(42)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Normalize training and testing input
+X_train = (X_train - X_train.mean()) / X_train.std()
+X_test = (X_test - X_train.mean()) / X_train.std()
 X_train = X_train.astype(np.float32)
 y_train = y_train.astype(np.float32)
 net = Net()
@@ -75,5 +93,5 @@ for epoch in range(200):
         loss.backward()
         optimizer.step()
         running_loss += loss.item()
-    print(f"Epoch {epoch+1} loss: {running_loss/len(X_train)}")
+    print(f"Epoch {epoch + 1} loss: {running_loss / len(X_train)}")
     evaluate()

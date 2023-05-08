@@ -1,12 +1,16 @@
 import pickle
-
+import seaborn as sns
 import numpy as np
+from matplotlib import pyplot as plt
 from sklearn import metrics
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_auc_score, f1_score, confusion_matrix
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
 
 methods = ['RandomForest', 'LogisticRegression', 'DecisionTree', 'GaussianNB', 'SVM', 'MLP', 'GBC', 'XGBoost']
 
 
+save_features = True
 def train(train_features, train_labels, test_features, test_labels, method='GBC', save_model=True):
     from sklearn.metrics import accuracy_score
     mdl = None
@@ -80,6 +84,30 @@ def train(train_features, train_labels, test_features, test_labels, method='GBC'
     # Print out the mean absolute error (mae)
     print('Mean Absolute Error:', np.mean(errors), 'degrees.')
 
+    # Compute f1score
+    f1score = f1_score(test_labels, predictions.round())
+    print('f1score:', f1score)
+    # Compute precision, recall, and accuracy
+    precision = metrics.precision_score(test_labels, predictions.round())
+    recall = metrics.recall_score(test_labels, predictions.round())
+    accuracy = metrics.accuracy_score(test_labels, predictions.round())
+    # Compute specificity
+    tn, fp, fn, tp = confusion_matrix(test_labels, predictions.round()).ravel()
+    specificity = tn / (tn + fp)
+    print('specificity:', specificity)
+
+    # Plot confusion matrix as a heat map
+    # cm = confusion_matrix(test_labels, predictions.round())
+    # ax = plt.subplot()
+    # sns.heatmap(cm, annot=True, ax=ax, cmap='Blues')
+    # ax.set_xlabel('Predicted labels')
+    # ax.set_ylabel('True labels')
+    # ax.set_title('Confusion Matrix')
+    # ax.xaxis.set_ticklabels(['Negative', 'Positive'])
+    # ax.yaxis.set_ticklabels(['Negative', 'Positive'])
+
+    # Display the heat map
+    plt.show()
     # threshold
     pred = []
     for val in predictions:
@@ -88,8 +116,6 @@ def train(train_features, train_labels, test_features, test_labels, method='GBC'
         else:
             pred.append(0)
 
-    # Calculate mean absolute percentage error (MAPE)
-    # mape = 100 * (errors / test_labels)
     # Calculate and display accuracy
     accuracy = accuracy_score(test_labels, pred)
     print('Accuracy:', accuracy)
@@ -98,15 +124,65 @@ def train(train_features, train_labels, test_features, test_labels, method='GBC'
     auc = roc_auc_score(test_labels, pred)
     print('AUC:', auc)
 
+    # Add metrics to a dictionary
+    metrics_dict = {'f1-score': f1score, 'precision': precision, 'recall': recall, 'accuracy': accuracy, 'specificity': specificity}
+    # Return the metrics dictionary
+    return metrics_dict
 
 def train_all(train_features, train_labels, test_features, test_labels):
+    # Create an empty dictionary to store the metrics for each model
+    results_dict = {}
+    # Loop over the methods and train each model
     for method in methods:
-        train(train_features, train_labels, test_features, test_labels, method)
+        metrics_dict = train(train_features, train_labels, test_features, test_labels, method)
+        # Add the metrics dictionary to the results dictionary
+        results_dict[method] = metrics_dict
 
-# random forest 0.65
-# LogisticRegression 0.64
-# DecisionTree 0.6
-# Naive Bayes 0.63
-# svm 0.63
-# gradient boosting classifier 0.65
-# MLP 0.65
+    save_features(train_features, train_labels, test_features, test_labels)
+    # # Create a pandas DataFrame from the results dictionary
+    # import pandas as pd
+    # df = pd.DataFrame.from_dict(results_dict, orient='index')
+    #
+    # # Plot the metrics as a grouped bar chart using seaborn
+    # sns.set_style("whitegrid")
+    # ax = df.plot(kind='bar', rot=0, figsize=(10, 6))
+    # ax.set_title('Comparison of Model Performance')
+    # ax.set_xlabel('Model')
+    # ax.set_ylabel('Score')
+    # ax.set_ylim([0.8, 1.0])
+    #
+    # # Move the legend to the top-right corner
+    # ax.legend(loc='upper right')
+    #
+    # plt.show()
+
+
+def save_features(train_features, train_labels, test_features, test_labels):
+    # 保存决策树特征
+    dtc = DecisionTreeClassifier(random_state=42)
+    dtc.fit(train_features, train_labels)
+    train_dtc_features = dtc.predict_proba(train_features)
+    test_dtc_features = dtc.predict_proba(test_features)
+
+    # 保存svm特征
+    svm = SVC(random_state=42, probability=True)
+    svm.fit(train_features, train_labels)
+    train_svm_features = svm.predict_proba(train_features)
+    test_svm_features = svm.predict_proba(test_features)
+
+    # 将新特征与原特征进行拼接
+    train_new_features = np.hstack((train_features, train_dtc_features, train_svm_features))
+    test_new_features = np.hstack((test_features, test_dtc_features, test_svm_features))
+
+    if save_features:
+        # Save the extracted features to disk
+        with open('./checkpoints/train_features_dtc.pkl', 'wb') as f:
+            pickle.dump(train_dtc_features, f)
+        with open('./checkpoints/train_features_svm.pkl', 'wb') as f:
+            pickle.dump(train_svm_features, f)
+        with open('./checkpoints/test_features_dtc.pkl', 'wb') as f:
+            pickle.dump(test_dtc_features, f)
+        with open('./checkpoints/test_features_svm.pkl', 'wb') as f:
+            pickle.dump(test_svm_features, f)
+    return train_new_features, train_labels, test_new_features, test_labels
+
