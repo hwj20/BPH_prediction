@@ -1,7 +1,8 @@
+<meta charset="UTF-8">
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Risk Score Card Calculator</title>
+    <title>结果分析</title>
     <style>
 		body {
 			font-family: Arial, sans-serif;
@@ -38,14 +39,15 @@
 </head>
 <body>
 <div class="container">
-    <h1>Risk Score Card Calculator</h1>
+    <h1>结果分析</h1>
     {% if risk_group == "HIGH" %}
-    <p class="result">Your risk group is: <span class="high">{{ risk_group }}</span></p>
+    <p class="result">风险等级 <span class="high">高</span></p>
     {% elif risk_group == "MEDIUM" %}
-    <p class="result">Your risk group is: <span class="medium">{{ risk_group }}</span></p>
+    <p class="result">风险等级 <span class="medium">中</span></p>
     {% elif risk_group == "LOW" %}
-    <p class="result">Your risk group is: <span class="low">{{ risk_group }}</span></p>
+    <p class="result">风险等级 <span class="low">低</span></p>
     {% endif %}
+<!--    <span class="high">危险因素: </span>年龄, 游离fpsa-->
 </div>
 </body>
 </html>

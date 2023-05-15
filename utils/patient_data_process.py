@@ -1,4 +1,5 @@
 # encoding=utf-8
+import json
 import math
 
 import numpy
@@ -153,8 +154,41 @@ for index, row in read_file.iterrows():
 
     # 处理既往史 TODO
 
+import mysql.connector
 data_output = []
+
+# Establish a connection to the MySQL database
+cnx = mysql.connector.connect(
+    host='localhost',
+    user='root',
+    password='123456',
+    database='patient_data'
+)
+
+# Create a cursor object to execute SQL queries
+cursor = cnx.cursor()
 for patient in data:
+    # Prepare the SQL statement
+    sql = "INSERT INTO patient (patient_unique_number, age, is_BPH, other_info, test_res, has_other_disease, has_surgery, drink_state, smoke_state) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+
+    # Prepare the values to be inserted
+    values = (
+        patient.patient_unique_number,
+        patient.age,
+        patient.is_BPH,
+        json.dumps(patient.other_info),
+        json.dumps(patient.test_res),
+        patient.has_other_disease,
+        patient.has_surgery,
+        patient.drink_state,
+        patient.smoke_state
+    )
+
+    # Execute the SQL statement
+    cursor.execute(sql, values)
+
+    # Commit the changes to the database
+    cnx.commit()
     data_output.append({
         "patient_unique_number": patient.patient_unique_number,
         **patient.other_info,
@@ -167,6 +201,10 @@ for patient in data:
         "smoke_state": patient.smoke_state
     })
 df = pd.DataFrame(data_output)
+df.to_csv('../data/patient_data.csv', index=False, encoding='utf_8_sig')
+cursor.close()
+cnx.close()
+print('insert database success!')
 # df = df.rename(columns=e2c_name_map)
 # 创建新的转义字典
 # rename_map = {}
@@ -175,8 +213,7 @@ df = pd.DataFrame(data_output)
 #         val = val + '(' + unit_map[val] + ')'
 #     rename_map[key] = val
 # df = df.rename(columns=rename_map)
-df.to_csv('data/patient_data.csv', index=False, encoding='utf_8_sig')
-
+# Close the cursor and connection
 # 输出结果
 # for target_patient in data:
 # print(target_patient.patient_unique_number)

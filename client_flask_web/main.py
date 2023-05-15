@@ -1,3 +1,4 @@
+# encoding=utf-8
 from flask import render_template, request, Flask
 
 # risk factor

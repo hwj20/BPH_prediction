@@ -1,7 +1,8 @@
+<meta charset="UTF-8">
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Risk Score Card Calculator</title>
+    <title>泌尿系统疾病危险指标计算器</title>
     <style>
       body {
         background-image: url('{{ url_for('static', filename='pics/calculator_bg.png') }}');
@@ -97,24 +98,24 @@ form input[type="number"] {
 
 <div class="container">
 <!--    <p style="background-image: url('{{ url_for('static', filename='pics/calculator_bg.png') }}');">-->
-    <h1>Risk Score Card Calculator</h1>
+    <h1>泌尿系统疾病危险指标计算器</h1>
     <form action="/calculate" method="POST">
         <div class="input-group">
-            <label for="age">Age:</label>
+            <label for="age">年龄:</label>
             <input type="number" step="any" id="age" name="age" required>
         </div>
 
         <div class="input-group">
-            <label for="fpsa">FPSA:</label>
+            <label for="fpsa">游离FPSA:</label>
             <input type="number" step="any" id="fpsa" name="fpsa" required>
         </div>
 
         <div class="input-group">
-            <label for="drink_state">Drink State:</label>
+            <label for="drink_state">饮酒史</label>
             <select id="drink_state" name="drink_state">
-                <option value="0">Never</option>
-                <option value="1">Socially</option>
-                <option value="2">Frequently</option>
+                <option value="0">从不</option>
+                <option value="1">偶尔</option>
+                <option value="2">经常</option>
             </select>
         </div>
 
@@ -129,11 +130,11 @@ form input[type="number"] {
         </div>
 
         <div class="input-group">
-            <label for="smoke_state">Smoke State:</label>
+            <label for="smoke_state">吸烟史:</label>
             <select id="smoke_state" name="smoke_state">
-                <option value="0">Never</option>
-                <option value="1">Past</option>
-                <option value="2">Current</option>
+                <option value="0">从不</option>
+                <option value="1">已戒烟</option>
+                <option value="2">未戒烟</option>
             </select>
         </div>
 
@@ -148,10 +149,10 @@ form input[type="number"] {
         </div>
 
         <div class="input-group">
-            <label for="has_surgery">Has Surgery:</label>
+            <label for="has_surgery">有过手术史:</label>
             <select id="has_surgery" name="has_surgery">
-                <option value="0">No</option>
-                <option value="1">Yes</option>
+                <option value="0">无</option>
+                <option value="1">有</option>
             </select>
         </div>
 
@@ -166,7 +167,7 @@ form input[type="number"] {
         </div>
 
         <div class="input-group">
-        <input type="submit" value="Calculate">
+        <input type="submit" value="计算">
         </div>
 
     </form>
