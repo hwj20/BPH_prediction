@@ -1,12 +1,11 @@
 # encoding=utf-8
 import json
+import mysql.connector
 import math
-
 import numpy
 import pandas as pd
 from pandas import DataFrame
-
-from PatientTypeUtils import *
+from patient_type_utils import *
 
 # 游离PSA和前列腺增生关系最大
 
@@ -132,7 +131,7 @@ for index, row in read_file.iterrows():
         target_patient.surgery_history = surgery_history
 
     # 处理吸烟史
-    smoke_state = 0     # 无抽烟史
+    smoke_state = 0  # 无抽烟史
     has_smoke_history = row['个人史-嗜烟']
     quit_smoke_history = row['个人史-戒烟']
     if type(has_smoke_history) == str and get_first_chinese_char(has_smoke_history) != '无':
@@ -144,17 +143,17 @@ for index, row in read_file.iterrows():
     target_patient.smoke_state = smoke_state
 
     # 处理饮酒史
-    drink_state = 2     # 经常 和 其它标签
+    drink_state = 2  # 经常 和 其它标签
     has_drink_history = row['个人史-嗜酒']
     if type(has_drink_history) != str or get_first_chinese_char(has_drink_history) == '无':
-        drink_state = 0         # 无饮酒史
+        drink_state = 0  # 无饮酒史
     elif get_first_chinese_char(has_drink_history) == '有' or get_first_chinese_char(has_drink_history) == '偶':
-        drink_state = 1         # 偶尔
+        drink_state = 1  # 偶尔
     target_patient.drink_state = drink_state
 
     # 处理既往史 TODO
 
-import mysql.connector
+
 data_output = []
 
 # Establish a connection to the MySQL database
@@ -205,6 +204,8 @@ df.to_csv('../data/patient_data.csv', index=False, encoding='utf_8_sig')
 cursor.close()
 cnx.close()
 print('insert database success!')
+
+# convert the English label name into Chinese label name
 # df = df.rename(columns=e2c_name_map)
 # 创建新的转义字典
 # rename_map = {}
@@ -214,6 +215,7 @@ print('insert database success!')
 #     rename_map[key] = val
 # df = df.rename(columns=rename_map)
 # Close the cursor and connection
+
 # 输出结果
 # for target_patient in data:
 # print(target_patient.patient_unique_number)

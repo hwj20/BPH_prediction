@@ -52,7 +52,7 @@ class Net(nn.Module):
 
 
 # Load data
-data = pd.read_csv("data/train.csv")
+data = pd.read_csv("../data/train.csv")
 data = process_data(data)
 
 # Preprocess data

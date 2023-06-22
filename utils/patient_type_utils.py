@@ -56,7 +56,7 @@ class PatientType:
     def __init__(self, patient_num: int):
         self.patient_unique_number = patient_num  # 患者唯一号
         self.age = 0  # 年龄
-        self.is_BPH = True  # 标签数据：有 BPH 这个病
+        self.is_BPH = True  # 标签数据：是否有 BPH 这个病
 
         self.other_info = {}
 

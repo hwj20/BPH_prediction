@@ -1,7 +1,9 @@
 import math
 
+from sklearn.model_selection import train_test_split
+
 from utils.feature_select import *
-from utils.ml_utils import train_all
+from utils.ml_utils import train_all, train_mean
 
 import numpy
 import pandas as pd
@@ -63,7 +65,11 @@ def remove_units(read_file):
     return read_file
 
 
+analyse_feature = False
 read_file = pd.read_csv('data/train.csv', low_memory=False)
+if analyse_feature:
+    feature_analysis('ACR', read_file)
+    input()
 read_file = process_data(read_file)
 selected_features = find_top_feature(read_file)
 selected_features.append('is_BPH')
@@ -71,10 +77,6 @@ read_file = read_file[selected_features]
 print(read_file.columns)
 # input()
 
-# Using Skicit-learn to split data into training and testing sets
-from sklearn.model_selection import train_test_split
-# Use numpy to convert to arrays
-import numpy as np
 
 features = read_file
 # Labels are the values we want to predict
@@ -89,10 +91,12 @@ features = np.array(features)
 train_features, test_features, train_labels, test_labels = train_test_split(features, labels, test_size=0.25,
                                                                             random_state=42)
 
+# train_mean(train_features, train_labels, test_features, test_labels)
 train_all(train_features, train_labels, test_features, test_labels)
 # train(train_features, train_labels, test_features, test_labels, method='')
 
 
+"""
 # with selected label
 # method is RandomForest
 # Mean Absolute Error: 0.07 degrees.
@@ -118,9 +122,6 @@ train_all(train_features, train_labels, test_features, test_labels)
 # Mean Absolute Error: 0.05 degrees.
 # Accuracy: 0.95
 # AUC: 0.9510035419126328
-# D:\Python\Python311\Lib\site-packages\sklearn\neural_network\_multilayer_perceptron.py:679: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (200) reached and the optimization hasn't converged yet.
-# warnings.warn(
-#     method is GBC
 # Mean Absolute Error: 0.02 degrees.
 # Accuracy: 0.98
 # AUC: 0.9787485242030697
@@ -128,3 +129,12 @@ train_all(train_features, train_labels, test_features, test_labels)
 # Mean Absolute Error: 0.25 degrees.
 # Accuracy: 0.97
 # AUC: 0.9663518299881936
+
+# Mean Method
+# Mean Absolute Error: 0.09294581092969938 degrees.
+# f1score: 0.9636963696369636
+# specificity: 0.9752066115702479
+# Accuracy: 0.96
+# AUC: 0.9616292798110979
+# {'f1-score': 0.9636963696369636, 'precision': 0.9798657718120806, 'recall': 0.948051948051948, 'accuracy': 0.96, 'specificity': 0.9752066115702479}
+"""

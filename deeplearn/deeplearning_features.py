@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 
-file_path = './checkpoints/'
+file_path = '../checkpoints/'
 # Load the extracted features and original data
 train_features_rf = torch.load(file_path+'train_features_rf.pt')
 train_features_svm = torch.load(file_path+'train_features_svm.pt')

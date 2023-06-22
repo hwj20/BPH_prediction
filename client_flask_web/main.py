@@ -1,11 +1,6 @@
 # encoding=utf-8
 from flask import render_template, request, Flask
 
-# risk factor
-# Index(['age', 'drink_state', 'RBCs', 'LDL', 'smoke_state', 'GHb_A1c',
-#        'PLT', 'has_surgery', 'WBC', 'FPSA', 'PCV', 'is_BPH'],
-#       dtype='object')
-
 
 app = Flask(__name__)
 
@@ -15,8 +10,18 @@ def index():
     return render_template('index.html')
 
 
+"""
+selected risk factor:
+Index(['age', 'drink_state', 'RBCs', 'LDL', 'smoke_state', 'GHb_A1c',
+       'PLT', 'has_surgery', 'WBC', 'FPSA', 'PCV', 'is_BPH'],
+      dtype='object')
+"""
 @app.route('/calculate', methods=['POST'])
 def calculate():
+    """
+    calculate selected factors
+    :return: result page
+    """
     # Get input values from the form
     age = request.form['age']
     fpsa = request.form['fpsa']

@@ -6,7 +6,7 @@ import numpy
 import pandas as pd
 from pandas import DataFrame
 
-from PatientTypeUtils import *
+from patient_type_utils import *
 
 # 游离PSA和前列腺增生关系最大
 
@@ -138,6 +138,8 @@ df.to_csv('../data/healthy_data.csv', index=False, encoding='utf_8_sig')
 cursor.close()
 cnx.close()
 print('insert database success!')
+
+# translate the English label names into Chinese
 # df = df.rename(columns=e2c_name_map)
 # 创建新的转义字典
 # rename_map = {}
