@@ -101,7 +101,6 @@ def train(train_features, train_labels, test_features, test_labels, method='GBC'
     specificity = tn / (tn + fp)
     print('specificity:', specificity)
 
-
     # threshold
     pred = []
     for val in predictions:
@@ -281,7 +280,6 @@ def train_all(train_features, train_labels, test_features, test_labels):
     for method in methods:
         metrics_dict = train(train_features, train_labels, test_features, test_labels, method)
 
-"""
     # Draw the pictures for comparison of metrics
     # Add the metrics dictionary to the results dictionary
     #     if method == 'GBC':
@@ -329,7 +327,7 @@ def train_all(train_features, train_labels, test_features, test_labels):
     # plt.tight_layout()  # ÊÕ½ôÍ¼Ïñ²¼¾Ö
     #
     # plt.show()
-"""
+
 
 # UNUSED method to save the features from DT and SVM models
 def save_features(train_features, train_labels, test_features, test_labels):

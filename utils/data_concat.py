@@ -14,5 +14,5 @@ print(len(df1))
 df = pd.concat([df1, df2], axis=0)
 
 # Save the concatenated DataFrame to a new CSV file
-df.to_csv("data/train.csv",encoding='utf_8_sig', index=False)
+df.to_csv("../data/train.csv",encoding='utf_8_sig', index=False)
 

@@ -7,10 +7,11 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import ExtraTreesClassifier
 
-
 show_pearson = False
 save_file = True
 label_name = 'is_BPH'
+
+
 def feature_analysis(feature_name, read_file):
     """
     analyse the statics value of a feature
@@ -57,12 +58,13 @@ def feature_analysis(feature_name, read_file):
 
 def process_data(read_file):
     """
-    drop some columns(missing too much) and fill missing vaule
+    drop some columns(missing too much) and fill missing value
     :param read_file:
     :return:
     """
     # Create a list of columns to be dropped
-    cols_to_drop = ['GLU', 'ACR', '登记号', '病案号', '就诊ID', 'patient_unique_number', 'has_other_disease','PBG','FBG']
+    cols_to_drop = ['GLU', 'ACR', '登记号', '病案号', '就诊ID', 'patient_unique_number', 'has_other_disease', 'PBG',
+                    'FBG']
 
     # Drop the columns in one step
     read_file = read_file.drop(cols_to_drop, axis=1)
