@@ -68,7 +68,7 @@ def remove_units(read_file):
 analyse_feature = False
 read_file = pd.read_csv('data/train.csv', low_memory=False)
 if analyse_feature:
-    feature_analysis('ACR', read_file)
+    feature_analysis('drink_state', read_file)
     input()
 read_file = process_data(read_file)
 selected_features = find_top_feature(read_file)

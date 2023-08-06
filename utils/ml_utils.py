@@ -11,6 +11,7 @@ from sklearn.tree import DecisionTreeClassifier
 methods = ['RandomForest', 'LogisticRegression', 'DecisionTree', 'GaussianNB', 'SVM', 'MLP', 'GBC', 'XGBoost']
 
 save_features = True
+draw_comparison = True
 
 
 def train(train_features, train_labels, test_features, test_labels, method='GBC', save_model=True):
@@ -72,7 +73,6 @@ def train(train_features, train_labels, test_features, test_labels, method='GBC'
 
         # Convert the test data to a DMatrix
         test_features = xgb.DMatrix(test_features)
-
     else:
         raise KeyError
 
@@ -271,6 +271,7 @@ def train_mean(train_features, train_labels, test_features, test_labels):
                     'specificity': specificity}
     # Return the metrics dictionary
     print(metrics_dict)
+    return metrics_dict
 
 
 def train_all(train_features, train_labels, test_features, test_labels):
@@ -279,54 +280,48 @@ def train_all(train_features, train_labels, test_features, test_labels):
     # Loop over the methods and train each model
     for method in methods:
         metrics_dict = train(train_features, train_labels, test_features, test_labels, method)
+        results_dict[method] = metrics_dict
 
-    # Draw the pictures for comparison of metrics
-    # Add the metrics dictionary to the results dictionary
-    #     if method == 'GBC':
-    #         method = 'DRALF'
-    #     results_dict[method] = metrics_dict
-    #
-    # print(results_dict)
-    # # save_features(train_features, train_labels, test_features, test_labels)
-    # # Create a pandas DataFrame from the results dictionary
-    # import pandas as pd
-    # df = pd.DataFrame.from_dict(results_dict, orient='index')
+    print(results_dict)
+    if draw_comparison:
+        # save_features(train_features, train_labels, test_features, test_labels)
+        # Create a pandas DataFrame from the results dictionary
+        import pandas as pd
+        df = pd.DataFrame.from_dict(results_dict, orient='index')
 
-    # Plot the metrics as a grouped bar chart using seaborn
-    # sns.set_style("whitegrid")
-    # ax = df.plot(kind='bar', rot=0, figsize=(10, 6))
-    # ax.set_title('Comparison of Model Performance')
-    # ax.set_xlabel('Model')
-    # ax.set_ylabel('Score')
-    # ax.set_ylim([0.5, 1.0])
-    # ax.set_yticks(np.arange(0.5, 1.01, 0.25))  # set y-axis ticks from 0.5 to 1.0 with step 0.25
-    #
-    # # Move the legend to the top-right corner
-    # # ax.legend(loc='upper right')
-    # ax.legend(loc=(1.01, 1))
-    # # ax.legend(loc=(1.05, 1), bbox_to_anchor=(1.1, 1))
+        # Plot the metrics as a grouped bar chart using seaborn
+        sns.set_style("whitegrid")
+        ax = df.plot(kind='bar', rot=0, figsize=(10, 6))
+        ax.set_title('Comparison of Model Performance')
+        ax.set_xlabel('Model')
+        ax.set_ylabel('Score')
+        ax.set_ylim([0.5, 1.0])
+        ax.set_yticks(np.arange(0.5, 1.01, 0.25))  # set y-axis ticks from 0.5 to 1.0 with step 0.25
 
-    # Plot the metrics as a grouped bar chart using seaborn
-    # sns.set_style("whitegrid")
-    # colors = ['#5cb85c', '#5bc0de', '#d9534f', '#9b59b6', '#34495e']  # 自定义颜色
-    # ax = df.plot(kind='bar', rot=0, figsize=(10, 15), subplots=True, layout=(5, 1), sharex=True, color=colors)
-    # ax[0][0].set_title('Comparison of Model Performance', fontsize=18, fontweight='bold')
-    # ax[4][0].set_xlabel('Model', fontsize=14)
-    # ax[4][0].tick_params(labelsize=12)  # 设置x轴标签字体大小
-    # # ax.set_ylim([0.5, 1.0])
-    # # ax.set_yticks(np.arange(0.5, 1.01, 0.25))  # set y-axis ticks from 0.5 to 1.0 with step 0.25
-    #
-    # # 设置y轴刻度尺
-    # yticks = [0.5, 0.75, 1.0]
-    # for i in range(5):
-    #     ax[i][0].set_ylim([0.5, 1])  # 设置每个子图的y轴范围
-    #     ax[i][0].set_yticks(yticks)  # 设置y轴刻度尺
-    #     ax[i][0].set_yticklabels(yticks, fontsize=12)  # 设置y轴刻度尺标签的字体大小
-    #     ax[i][0].legend(loc=(1.01, 1))
-    #
-    # plt.tight_layout()  # 收紧图像布局
-    #
-    # plt.show()
+        # Move the legend to the top-right corner
+        # ax.legend(loc='upper right')
+        ax.legend(loc=(1.01, 1))
+
+        sns.set_style("whitegrid")
+        colors = ['#5cb85c', '#5bc0de', '#d9534f', '#9b59b6', '#34495e']  # 自定义颜色
+        ax = df.plot(kind='bar', rot=0, figsize=(10, 15), subplots=True, layout=(5, 1), sharex=True, color=colors)
+        ax[0][0].set_title('Comparison of Model Performance', fontsize=18, fontweight='bold')
+        ax[4][0].set_xlabel('Model', fontsize=14)
+        ax[4][0].tick_params(labelsize=12)  # 设置x轴标签字体大小
+        # ax.set_ylim([0.5, 1.0])
+        # ax.set_yticks(np.arange(0.5, 1.01, 0.25))  # set y-axis ticks from 0.5 to 1.0 with step 0.25
+
+        # 设置y轴刻度尺
+        yticks = [0.5, 0.75, 1.0]
+        for i in range(5):
+            ax[i][0].set_ylim([0.5, 1])  # 设置每个子图的y轴范围
+            ax[i][0].set_yticks(yticks)  # 设置y轴刻度尺
+            ax[i][0].set_yticklabels(yticks, fontsize=12)  # 设置y轴刻度尺标签的字体大小
+            ax[i][0].legend(loc=(1.01, 1))
+
+        plt.tight_layout()  # 收紧图像布局
+
+        plt.show()
 
 
 # UNUSED method to save the features from DT and SVM models

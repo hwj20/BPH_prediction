@@ -14,16 +14,16 @@ label_name = 'is_BPH'
 
 def feature_analysis(feature_name, read_file):
     """
-    analyse the statics value of a feature
-    :param feature_name:
-    :param read_file:
-    :return:
+    analyze the statistical values of a feature for different labels
+    :param feature_name: name of the feature column
+    :param read_file: pandas DataFrame containing the data
+    :return: None
     """
     # Select the feature and label columns
     feature = read_file[feature_name]
     label = read_file[label_name]
 
-    # Calculate statistical features
+    # Calculate statistical features for all samples
     feature_stats = {
         'Mean': feature.mean(),
         'Standard Deviation': feature.std(),
@@ -35,10 +35,22 @@ def feature_analysis(feature_name, read_file):
         'Missing Values': feature.isnull().sum()
     }
 
-    # Calculate label statistics
-    label_stats = {
-        'Count of Positive Samples': label.sum(),
-        'Count of Negative Samples': label.count() - label.sum()
+    # Calculate feature statistics for positive samples
+    pos_feature_stats = {
+        'Mean in Positive Samples': feature[label == 1].mean(),
+        'Standard Deviation in Positive Samples': feature[label == 1].std(),
+        'Minimum in Positive Samples': feature[label == 1].min(),
+        'Maximum in Positive Samples': feature[label == 1].max(),
+        # Add more statistics for positive samples if needed
+    }
+
+    # Calculate feature statistics for negative samples
+    neg_feature_stats = {
+        'Mean in Negative Samples': feature[label == 0].mean(),
+        'Standard Deviation in Negative Samples': feature[label == 0].std(),
+        'Minimum in Negative Samples': feature[label == 0].min(),
+        'Maximum in Negative Samples': feature[label == 0].max(),
+        # Add more statistics for negative samples if needed
     }
 
     # Print the feature statistics
@@ -48,12 +60,15 @@ def feature_analysis(feature_name, read_file):
     for stat, value in feature_stats.items():
         print(f"{stat}: {value}")
 
-    # Print the label statistics
-    print("\nLabel Statistics:")
-    for stat, value in label_stats.items():
+    # Print the feature statistics for positive samples
+    print("\nFeature Statistics in Positive Samples:")
+    for stat, value in pos_feature_stats.items():
         print(f"{stat}: {value}")
 
-    # Example usage
+    # Print the feature statistics for negative samples
+    print("\nFeature Statistics in Negative Samples:")
+    for stat, value in neg_feature_stats.items():
+        print(f"{stat}: {value}")
 
 
 def process_data(read_file):
@@ -69,24 +84,6 @@ def process_data(read_file):
     # Drop the columns in one step
     read_file = read_file.drop(cols_to_drop, axis=1)
 
-    if show_pearson:
-        # Load the data into a pandas DataFrame
-        df = read_file
-
-        # Calculate the Pearson correlation matrix
-        corr = df.corr(method='pearson')
-
-        # Print the Pearson correlation matrix
-        print(corr)
-        # Plot the Pearson correlation matrix as a heatmap
-        sns.heatmap(corr, annot=True, cmap='coolwarm')
-
-        # Add the title to the plot
-        plt.title("Pearson Correlation Heatmap")
-
-        # Show the plot
-        plt.show()
-        input()
 
     # the following codes remove the columns with a high missing ratio
     read_file = read_file.astype({col: np.int8 for col in read_file.columns[read_file.dtypes == np.bool_]})
@@ -111,6 +108,25 @@ def process_data(read_file):
                 cols_to_drop.append(col)
     print('Drop ', cols_to_drop)
     read_file = read_file.drop(cols_to_drop, axis=1)
+
+    if show_pearson:
+        # Load the data into a pandas DataFrame
+        df = read_file
+
+        # Calculate the Pearson correlation matrix
+        corr = df.corr(method='pearson')
+
+        # Print the Pearson correlation matrix
+        print(corr)
+        # Plot the Pearson correlation matrix as a heatmap
+        sns.heatmap(corr, annot=True, cmap='coolwarm')
+
+        # Add the title to the plot
+        plt.title("Pearson Correlation Heatmap")
+
+        # Show the plot
+        plt.show()
+        input()
 
     """
     # show the count of neg or pos of label
