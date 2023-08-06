@@ -68,8 +68,7 @@ def remove_units(read_file):
 analyse_feature = False
 read_file = pd.read_csv('data/train.csv', low_memory=False)
 if analyse_feature:
-    feature_analysis('drink_state', read_file)
-    input()
+    feature_analysis('age', read_file)
 read_file = process_data(read_file)
 selected_features = find_top_feature(read_file)
 selected_features.append('is_BPH')
@@ -87,54 +86,17 @@ features = features.drop('is_BPH', axis=1)
 feature_list = list(features.columns)
 # Convert to numpy array
 features = np.array(features)
-# Split the data into training and testing sets
-train_features, test_features, train_labels, test_labels = train_test_split(features, labels, test_size=0.25,
-                                                                            random_state=42)
+# Split the data into training, validation and testing sets
+train_features, X_temp, train_labels, y_temp = train_test_split(features, labels, test_size=0.4, random_state=42)
+val_features, test_features, val_labels, test_labels = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42)
+# train_features, test_features, train_labels, test_labels = train_test_split(features, labels, test_size=0.25,
+#                                                                             random_state=42)
 
-# train_mean(train_features, train_labels, test_features, test_labels)
+print('-'*20+'validation'+'-'*20)
+train_mean(train_features, train_labels, val_features, val_labels)
+train_all(train_features, train_labels, val_features, val_labels)
+print('-'*20+'test'+'-'*20)
+train_mean(train_features, train_labels, test_features, test_labels)
 train_all(train_features, train_labels, test_features, test_labels)
-# train(train_features, train_labels, test_features, test_labels, method='')
 
 
-"""
-# with selected label
-# method is RandomForest
-# Mean Absolute Error: 0.07 degrees.
-# Accuracy: 0.96
-# AUC: 0.9589728453364817
-# method is LogisticRegression
-# Mean Absolute Error: 0.07 degrees.
-# Accuracy: 0.93
-# AUC: 0.9329988193624558
-# method is DecisionTree
-# Mean Absolute Error: 0.04 degrees.
-# Accuracy: 0.96
-# AUC: 0.9589728453364817
-# method is GaussianNB
-# Mean Absolute Error: 0.16 degrees.
-# Accuracy: 0.84
-# AUC: 0.859504132231405
-# method is SVM
-# Mean Absolute Error: 0.13 degrees.
-# Accuracy: 0.87
-# AUC: 0.871310507674144
-# method is MLP
-# Mean Absolute Error: 0.05 degrees.
-# Accuracy: 0.95
-# AUC: 0.9510035419126328
-# Mean Absolute Error: 0.02 degrees.
-# Accuracy: 0.98
-# AUC: 0.9787485242030697
-# method is XGBoost
-# Mean Absolute Error: 0.25 degrees.
-# Accuracy: 0.97
-# AUC: 0.9663518299881936
-
-# Mean Method
-# Mean Absolute Error: 0.09294581092969938 degrees.
-# f1score: 0.9636963696369636
-# specificity: 0.9752066115702479
-# Accuracy: 0.96
-# AUC: 0.9616292798110979
-# {'f1-score': 0.9636963696369636, 'precision': 0.9798657718120806, 'recall': 0.948051948051948, 'accuracy': 0.96, 'specificity': 0.9752066115702479}
-"""

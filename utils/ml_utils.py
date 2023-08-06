@@ -8,7 +8,7 @@ from sklearn.metrics import roc_auc_score, f1_score, confusion_matrix
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 
-methods = ['RandomForest', 'LogisticRegression', 'DecisionTree', 'GaussianNB', 'SVM', 'MLP', 'GBC', 'XGBoost']
+methods = ['RandomForest', 'LogisticRegression',  'GaussianNB', 'SVM', 'MLP', 'GBC', 'XGBoost']
 
 save_features = True
 draw_comparison = True
@@ -277,6 +277,12 @@ def train_mean(train_features, train_labels, test_features, test_labels):
 def train_all(train_features, train_labels, test_features, test_labels):
     # Create an empty dictionary to store the metrics for each model
     results_dict = {}
+
+    # if presented the mean method, the result is as follows
+    # results_dict['Ensemble'] = {'f1-score': 0.9356223175965666, 'precision': 0.9478260869565217,
+    #                             'recall': 0.923728813559322, 'accuracy': 0.9318181818181818,
+    #                             'specificity': 0.9411764705882353}
+
     # Loop over the methods and train each model
     for method in methods:
         metrics_dict = train(train_features, train_labels, test_features, test_labels, method)
