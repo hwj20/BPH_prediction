@@ -69,12 +69,12 @@ analyse_feature = False
 read_file = pd.read_csv('data/train.csv', low_memory=False)
 if analyse_feature:
     feature_analysis('age', read_file)
+    input()
 read_file = process_data(read_file)
 selected_features = find_top_feature(read_file)
 selected_features.append('is_BPH')
 read_file = read_file[selected_features]
 print(read_file.columns)
-# input()
 
 
 features = read_file
@@ -93,10 +93,10 @@ val_features, test_features, val_labels, test_labels = train_test_split(X_temp, 
 #                                                                             random_state=42)
 
 print('-'*20+'validation'+'-'*20)
-train_mean(train_features, train_labels, val_features, val_labels)
+# train_mean(train_features, train_labels, val_features, val_labels)
 train_all(train_features, train_labels, val_features, val_labels)
 print('-'*20+'test'+'-'*20)
-train_mean(train_features, train_labels, test_features, test_labels)
+# train_mean(train_features, train_labels, test_features, test_labels)
 train_all(train_features, train_labels, test_features, test_labels)
 
 

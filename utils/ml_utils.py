@@ -1,5 +1,5 @@
 import pickle
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, roc_curve, auc
 import seaborn as sns
 import numpy as np
 from matplotlib import pyplot as plt
@@ -8,10 +8,11 @@ from sklearn.metrics import roc_auc_score, f1_score, confusion_matrix
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 
-methods = ['RandomForest', 'LogisticRegression',  'GaussianNB', 'SVM', 'MLP', 'GBC', 'XGBoost']
+methods = ['RandomForest', 'LogisticRegression', 'GaussianNB', 'SVM', 'MLP', 'GBC', 'XGBoost', 'Ensemble']
 
 save_features = True
-draw_comparison = True
+draw_comparison = False
+draw_AUC = True
 
 
 def train(train_features, train_labels, test_features, test_labels, method='GBC', save_model=True):
@@ -46,7 +47,7 @@ def train(train_features, train_labels, test_features, test_labels, method='GBC'
         mdl = svm.SVC(random_state=42).fit(train_features, train_labels)
     elif method == 'MLP':
         from sklearn.neural_network import MLPClassifier
-        mdl = MLPClassifier(random_state=42).fit(train_features, train_labels)
+        mdl = MLPClassifier(random_state=42, max_iter=500).fit(train_features, train_labels)
 
     elif method == 'GBC':
         from sklearn.ensemble import GradientBoostingClassifier
@@ -73,10 +74,13 @@ def train(train_features, train_labels, test_features, test_labels, method='GBC'
 
         # Convert the test data to a DMatrix
         test_features = xgb.DMatrix(test_features)
+    elif method == 'Ensemble':
+        metric_dict, predictions = train_mean(train_features, train_labels, test_features, test_labels)
+        return metric_dict, predictions
     else:
         raise KeyError
 
-    print('method is ' + method)
+    print('=' * 10 + 'Method is ' + method)
     if save_model:
         # Save the model to a file
         with open('./checkpoints/' + method + 'model.pkl', 'wb') as f:
@@ -128,14 +132,14 @@ def train(train_features, train_labels, test_features, test_labels, method='GBC'
     print('Accuracy:', accuracy)
 
     # assuming pred is the predicted probability of positive class (class 1)
-    auc = roc_auc_score(test_labels, pred)
-    print('AUC:', auc)
+    auc_score = roc_auc_score(test_labels, pred)
+    print('AUC:', auc_score)
 
     # Add metrics to a dictionary
     metrics_dict = {'f1-score': f1score, 'precision': precision, 'recall': recall, 'accuracy': accuracy,
                     'specificity': specificity}
     # Return the metrics dictionary
-    return metrics_dict
+    return metrics_dict, predictions
 
 
 def train_mean(train_features, train_labels, test_features, test_labels):
@@ -182,7 +186,7 @@ def train_mean(train_features, train_labels, test_features, test_labels):
         elif method == 'MLP':
             from sklearn.neural_network import MLPClassifier
 
-            mdl = MLPClassifier(random_state=42).fit(train_features, train_labels)
+            mdl = MLPClassifier(random_state=42, max_iter=500).fit(train_features, train_labels)
 
         elif method == 'GBC':
             from sklearn.ensemble import GradientBoostingClassifier
@@ -211,6 +215,8 @@ def train_mean(train_features, train_labels, test_features, test_labels):
             # Convert the test data to a DMatrix
             test_features = xgb.DMatrix(test_features)
 
+        elif method == 'Ensemble':
+            continue
         else:
             raise KeyError
 
@@ -218,6 +224,7 @@ def train_mean(train_features, train_labels, test_features, test_labels):
         results_dict += predictions
         count += 1
 
+    print('=' * 10 + 'Method is Mean')
     predictions = results_dict / count
     # Calculate the absolute errors
     errors = abs(predictions - test_labels)
@@ -271,12 +278,14 @@ def train_mean(train_features, train_labels, test_features, test_labels):
                     'specificity': specificity}
     # Return the metrics dictionary
     print(metrics_dict)
-    return metrics_dict
+
+    return metrics_dict, predictions
 
 
 def train_all(train_features, train_labels, test_features, test_labels):
     # Create an empty dictionary to store the metrics for each model
     results_dict = {}
+    prediction_dict = {}
 
     # if presented the mean method, the result is as follows
     # results_dict['Ensemble'] = {'f1-score': 0.9356223175965666, 'precision': 0.9478260869565217,
@@ -285,8 +294,9 @@ def train_all(train_features, train_labels, test_features, test_labels):
 
     # Loop over the methods and train each model
     for method in methods:
-        metrics_dict = train(train_features, train_labels, test_features, test_labels, method)
+        metrics_dict, prediction = train(train_features, train_labels, test_features, test_labels, method)
         results_dict[method] = metrics_dict
+        prediction_dict[method] = prediction
 
     print(results_dict)
     if draw_comparison:
@@ -311,7 +321,7 @@ def train_all(train_features, train_labels, test_features, test_labels):
         sns.set_style("whitegrid")
         colors = ['#5cb85c', '#5bc0de', '#d9534f', '#9b59b6', '#34495e']  # 自定义颜色
         ax = df.plot(kind='bar', rot=0, figsize=(10, 15), subplots=True, layout=(5, 1), sharex=True, color=colors)
-        ax[0][0].set_title('Comparison of Model Performance', fontsize=18, fontweight='bold')
+        # ax[0][0].set_title('Comparison of Model Performance', fontsize=18, fontweight='bold')
         ax[4][0].set_xlabel('Model', fontsize=14)
         ax[4][0].tick_params(labelsize=12)  # 设置x轴标签字体大小
         # ax.set_ylim([0.5, 1.0])
@@ -327,6 +337,32 @@ def train_all(train_features, train_labels, test_features, test_labels):
 
         plt.tight_layout()  # 收紧图像布局
 
+        plt.show()
+
+    if draw_AUC:
+        num_methods = len(prediction_dict)
+        rows = (num_methods + 3) // 4  # Calculate the number of rows needed
+
+        fig, axs = plt.subplots(rows, 4, figsize=(15, 5 * rows))  # Adjust figsize as needed
+
+        for idx, (method_name, prediction) in enumerate(prediction_dict.items()):
+            row = idx // 4
+            col = idx % 4
+            fpr, tpr, thresholds = roc_curve(test_labels, prediction)
+            # roc_auc = auc(fpr, tpr)
+            roc_auc = auc(fpr, tpr)
+
+            ax = axs[row, col]
+            ax.plot(fpr, tpr, lw=2, label=f'{method_name} (AUC = %0.2f)' % roc_auc)
+            ax.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+            ax.set_xlim([0.0, 1.0])
+            ax.set_ylim([0.0, 1.05])
+            ax.set_xlabel('False Positive Rate')
+            ax.set_ylabel('True Positive Rate')
+            ax.set_title(f'ROC of {method_name}')
+            ax.legend(loc="lower right")
+
+        plt.tight_layout()  # Adjust layout spacing
         plt.show()
 
 
