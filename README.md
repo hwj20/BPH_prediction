@@ -12,4 +12,4 @@ You have the flexibility to customize parameters and code within your own module
 
 ***
 
-There is also a Vue version for client website. You can cantact me if interested.
+There is also a Vue version for client website. Feel free to contact me if interested.
