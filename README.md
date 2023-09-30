@@ -10,5 +10,5 @@ It conatins three part: train(machine learning method in ./utils; deep learning 
 You have the flexibility to customize parameters and code within your own module, while this project **serves as a reference example for any project that utilizes machine learning models in the backend and showcases the results through the frontend.**
 
 
-
+---
 There is also a Vue version for client website. You can cantact me if interested.
