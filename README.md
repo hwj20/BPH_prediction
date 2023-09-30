@@ -1,7 +1,7 @@
 # BPH_prediction
 
 
-A BPH risk prediction system.
+A Benign Prostatic Hyperplasia(BPH) risk prediction system.
 
 The data is private and from physical examination.
 
