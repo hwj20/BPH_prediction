@@ -1,5 +1,4 @@
 # encoding=utf-8
-# TODO: 登录注册，选择模型，上传和管理数据
 import hashlib
 
 from flask import render_template, request, Flask, jsonify
@@ -32,7 +31,6 @@ def index():
     return render_template('index.html')
 
 
-# 吐槽：我不想写用户id冲突部分的检测了，这个只能保证，你的id是hash出来的，几乎不可能会撞; 要是id撞了就会报错
 @app.route('/user/register', methods=['POST'])
 def handle_register():
     file = request.files['file']
