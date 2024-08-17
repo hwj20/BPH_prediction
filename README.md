@@ -16,7 +16,7 @@ There is also a Vue version for client website. Feel free to contact me if inter
 
 ***
 For the html pages,
-the client page is, and it presents as a simple cacluator for patient(demo) 
+the client pag presents as a simple cacluator for patient(demo) 
 <img width="1250" alt="calculator" src="https://github.com/user-attachments/assets/1eeccb6f-1f54-4adc-aea2-a388c4903452">
 
 the Server pages are,
