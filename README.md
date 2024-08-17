@@ -13,3 +13,11 @@ You have the flexibility to customize parameters and code within your own module
 ***
 
 There is also a Vue version for client website. Feel free to contact me if interested.
+
+***
+The client page is,
+<img width="1250" alt="calculator" src="https://github.com/user-attachments/assets/1eeccb6f-1f54-4adc-aea2-a388c4903452">
+
+And the admin pages are,
+<img width="1248" alt="module management" src="https://github.com/user-attachments/assets/17b8490f-ddf3-4b4a-82b1-3ac3e1139c68">
+<img width="1241" alt="manage(html)" src="https://github.com/user-attachments/assets/bba444df-2e53-4a2c-9b87-e26e2c269c04">
