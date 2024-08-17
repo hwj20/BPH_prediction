@@ -25,18 +25,18 @@ the Server pages are,
 
 ***
 For the vue project, 
-the login page,
+here are the login page,
 <img width="1237" alt="login(vue)" src="https://github.com/user-attachments/assets/d259285c-62f7-4405-bfce-3f711abecbb7">
 
 the welcome page,
 <img width="1246" alt="welcom_page" src="https://github.com/user-attachments/assets/ba891c0b-b00e-4763-9fd8-6182f7b64b57">
 
-the patient data,
+the patient data page,
 <img width="1273" alt="patient_data" src="https://github.com/user-attachments/assets/c60e4684-ddba-48d8-8c60-9c315a048200">
 
-the model management,
+the model management page,
 <img width="1235" alt="model_list" src="https://github.com/user-attachments/assets/51c63195-92f9-4ea6-867a-ef79f48ad4f7">
 
-the data file uploading,
+and the data file uploading page,
 <img width="1259" alt="uploading" src="https://github.com/user-attachments/assets/51d873f4-311e-4dd5-83d8-1600c73d976c">
 
