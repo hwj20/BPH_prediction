@@ -35,7 +35,7 @@ the patient data,
 <img width="1273" alt="patient_data" src="https://github.com/user-attachments/assets/c60e4684-ddba-48d8-8c60-9c315a048200">
 
 the model management,
-<img width="1241" alt="manage(html)" src="https://github.com/user-attachments/assets/98a4cd7c-86d2-40b0-a51f-23830f2d07b3">
+<img width="1235" alt="model_list" src="https://github.com/user-attachments/assets/51c63195-92f9-4ea6-867a-ef79f48ad4f7">
 
 the data file uploading,
 <img width="1259" alt="uploading" src="https://github.com/user-attachments/assets/51d873f4-311e-4dd5-83d8-1600c73d976c">
