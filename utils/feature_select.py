@@ -2,12 +2,14 @@
 from matplotlib import pyplot as plt
 import numpy as np
 import seaborn as sns
+import pandas as pd
 from sklearn.feature_selection import mutual_info_classif, f_classif
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import ExtraTreesClassifier
 
 show_pearson = False
+use_compare = True
 save_file = True
 label_name = 'is_BPH'
 
@@ -50,23 +52,19 @@ def feature_analysis(feature_name, read_file):
         'Standard Deviation in Negative Samples': feature[label == 0].std(),
         'Minimum in Negative Samples': feature[label == 0].min(),
         'Maximum in Negative Samples': feature[label == 0].max(),
-        # Add more statistics for negative samples if needed
     }
 
-    # Print the feature statistics
-    print("Feature:", feature_name)
-    print("Label:", label_name)
-    print("Feature Statistics:")
+    # Print all statistics
+    print(f"\nFeature Analysis for {feature_name}:")
+    print("\nGeneral Statistics:")
     for stat, value in feature_stats.items():
         print(f"{stat}: {value}")
 
-    # Print the feature statistics for positive samples
-    print("\nFeature Statistics in Positive Samples:")
+    print("\nPositive Sample Statistics:")
     for stat, value in pos_feature_stats.items():
         print(f"{stat}: {value}")
 
-    # Print the feature statistics for negative samples
-    print("\nFeature Statistics in Negative Samples:")
+    print("\nNegative Sample Statistics:")
     for stat, value in neg_feature_stats.items():
         print(f"{stat}: {value}")
 
@@ -118,8 +116,10 @@ def process_data(read_file):
 
         # Print the Pearson correlation matrix
         print(corr)
-        # Plot the Pearson correlation matrix as a heatmap
-        sns.heatmap(corr, annot=True, cmap='coolwarm')
+
+        # Plot the Pearson correlation matrix as a heatmap, annotation color set to #074388
+        # use a blue-only colormap
+        sns.heatmap(corr, annot=True, cmap='Blues', annot_kws={'color': '#074388'})
 
         # Add the title to the plot
         plt.title("Pearson Correlation Heatmap")
@@ -163,7 +163,42 @@ def load_data(read_file):
     return features, labels
 
 
-def find_top_feature(read_file):
+def draw_scores(scores_df):
+    """
+    Draw a bar graph showing the normalized scores (GI, F-score, MI) for features
+    using specified colors: ['#4C6A9C', '#8787C2', '#4292C6']
+    
+    Parameters:
+    -----------
+    scores_df : pandas.DataFrame
+        DataFrame containing the normalized scores with columns ['gi_n', 'f_n', 'mi_n']
+        and feature names as index
+    """
+    plt.figure(figsize=(15, 8))
+    
+    feature_names = scores_df.index.tolist()
+    x = np.arange(len(feature_names))
+    width = 0.25  # Width of the bars
+    
+    # Create bars for each score type
+    plt.bar(x - width, scores_df['gi_n'], width, label='GI score', color='#4C6A9C')
+    plt.bar(x, scores_df['f_n'], width, label='F-Score', color='#8787C2')
+    plt.bar(x + width, scores_df['mi_n'], width, label='MI-Score', color='#4292C6')
+    
+    # Customize the plot
+    plt.xlabel('Features', fontsize=12)
+    plt.ylabel('Normalized Score', fontsize=12)
+    plt.title('Feature Importance Scores Comparison', fontsize=14)
+    plt.xticks(x, feature_names, rotation=90, ha='center')
+    plt.legend(fontsize=10)
+    
+    # Adjust layout to prevent label cutoff
+    plt.tight_layout()
+    
+    # Show the plot
+    plt.show()
+
+def find_top_feature(read_file,  compare_kwargs=None):
     # Load the data and split into features and labels
     X, y = load_data(read_file)
 
@@ -194,13 +229,36 @@ def find_top_feature(read_file):
     print(top_k_features_f)
     print(top_k_features_mi)
 
-    res = []
-    for label in top_k_features_f:
-        if label in top_k_features_gi or label in top_k_features_mi:
-            res.append(label)
-    for label in top_k_features_gi:
-        if label in top_k_features_mi and label not in res:
-            res.append(label)
+    # Build a DataFrame with raw scores for normalization and averaging
+    scores_df = pd.DataFrame({
+        'feature': X.columns,
+        'gi': gi_scores,
+        'f': f_scores,
+        'mi': mi_scores
+    }).set_index('feature')
+
+    # Normalize each metric to [0,1] to make them comparable
+    scaler = MinMaxScaler()
+    scores_df[['gi_n', 'f_n', 'mi_n']] = scaler.fit_transform(scores_df[['gi', 'f', 'mi']])
+
+    # Average the normalized scores
+    scores_df['avg_n'] = scores_df[['gi_n', 'f_n', 'mi_n']].mean(axis=1)
+
+    # Select top-k features by average normalized score
+    k = 10
+    res = scores_df.sort_values('avg_n', ascending=False).head(k).index.tolist()
     print(res)
 
+    # Optionally call compare_feature_scores to visualize GI/F/MI for the selected features
+    if use_compare:
+        try:
+            if compare_kwargs is None:
+                compare_kwargs = {}
+            # Draw all features sorted by average normalized score
+            sorted_df = scores_df.sort_values('avg_n', ascending=False)
+            draw_scores(sorted_df)
+        except Exception as e:
+            print(f"compare_feature_scores failed: {e}")
+
     return res
+

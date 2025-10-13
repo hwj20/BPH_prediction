@@ -319,23 +319,23 @@ def train_all(train_features, train_labels, test_features, test_labels):
         ax.legend(loc=(1.01, 1))
 
         sns.set_style("whitegrid")
-        colors = ['#5cb85c', '#5bc0de', '#d9534f', '#9b59b6', '#34495e']  # ×Ô¶¨ÒåÑÕÉ«
+        colors = ['#5cb85c', '#5bc0de', '#d9534f', '#9b59b6', '#34495e']  # ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½É«
         ax = df.plot(kind='bar', rot=0, figsize=(10, 15), subplots=True, layout=(5, 1), sharex=True, color=colors)
         # ax[0][0].set_title('Comparison of Model Performance', fontsize=18, fontweight='bold')
         ax[4][0].set_xlabel('Model', fontsize=14)
-        ax[4][0].tick_params(labelsize=12)  # ÉèÖÃxÖá±êÇ©×ÖÌå´óÐ¡
+        ax[4][0].tick_params(labelsize=12)  # ï¿½ï¿½ï¿½ï¿½xï¿½ï¿½ï¿½Ç©ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡
         # ax.set_ylim([0.5, 1.0])
         # ax.set_yticks(np.arange(0.5, 1.01, 0.25))  # set y-axis ticks from 0.5 to 1.0 with step 0.25
 
-        # ÉèÖÃyÖá¿Ì¶È³ß
+        # ï¿½ï¿½ï¿½ï¿½yï¿½ï¿½Ì¶È³ï¿½
         yticks = [0.5, 0.75, 1.0]
         for i in range(5):
-            ax[i][0].set_ylim([0.5, 1])  # ÉèÖÃÃ¿¸ö×ÓÍ¼µÄyÖá·¶Î§
-            ax[i][0].set_yticks(yticks)  # ÉèÖÃyÖá¿Ì¶È³ß
-            ax[i][0].set_yticklabels(yticks, fontsize=12)  # ÉèÖÃyÖá¿Ì¶È³ß±êÇ©µÄ×ÖÌå´óÐ¡
+            ax[i][0].set_ylim([0.5, 1])  # ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½yï¿½á·¶Î§
+            ax[i][0].set_yticks(yticks)  # ï¿½ï¿½ï¿½ï¿½yï¿½ï¿½Ì¶È³ï¿½
+            ax[i][0].set_yticklabels(yticks, fontsize=12)  # ï¿½ï¿½ï¿½ï¿½yï¿½ï¿½Ì¶È³ß±ï¿½Ç©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡
             ax[i][0].legend(loc=(1.01, 1))
 
-        plt.tight_layout()  # ÊÕ½ôÍ¼Ïñ²¼¾Ö
+        plt.tight_layout()  # ï¿½Õ½ï¿½Í¼ï¿½ñ²¼¾ï¿½
 
         plt.show()
 
